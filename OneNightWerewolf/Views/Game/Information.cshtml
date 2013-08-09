@@ -1,0 +1,60 @@
+﻿@model OneNightWerewolf.Models.GameModel
+
+
+<fieldset>
+    <legend>情報</legend>
+    <p>
+        作成者：@Model.Game.Creator
+    </p>
+    <p>
+        現在の状態：@Model.Game.PhaseToString()
+    </p>
+    <p>
+        参加者 @Model.PlayerNum 名：@string.Join("、", Model.Players.Select(p => p.Player.PlayerName))
+    </p>
+    @if (Model.Game.NextUpdate.HasValue && Model.GetLeftTime().Seconds > 0)
+    {
+        <p>
+            残り <span id="lefttime">@Model.GetLeftTime().ToString(@"%m'分 '%s'秒'")</span> です。
+        </p>
+    }
+    @if (Model.Game.Phase > OneNightWerewolf.Models.Phase.Voting)
+    {
+        <table>
+        @foreach (var item in Model.Players) 
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Player.PlayerName)
+                </td>
+                <td>
+                    @item.GetCardNameForPlayer()
+                </td>
+                <td>
+                    @if (item.Player.Executed)
+                    {
+                        <span>処刑</span>
+                    }
+                    else
+                    {
+                        <span>生存</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Player.Won)
+                    {
+                        <span>勝利</span>
+                    }
+                    else
+                    {
+                        <span>敗北</span>
+                    }
+                </td>
+            </tr>
+        }
+        </table>
+        <p>
+            伏せカード：@string.Join("、", Model.SecretCards.Select(c => c.CardName))
+        </p>
+    }
+</fieldset>

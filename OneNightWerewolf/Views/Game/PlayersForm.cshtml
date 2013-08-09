@@ -1,0 +1,77 @@
+﻿@model OneNightWerewolf.Models.PlayerModel
+
+<fieldset>
+    <legend>@Model.Player.PlayerName @Model.GetCardNameForPlayer()</legend>
+
+    @if (Model.CanSendMessage())
+    {
+        @Html.Partial("PartialMessage", Model.CreateMessage())
+    }
+    @if (Model.CanVote())
+    {
+        using (Html.BeginForm("Vote", "Game"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("gameId", Model.Game.Game.GameId)
+            @Html.Hidden("playerId", Model.Player.PlayerId)
+            @Html.DropDownList("targetId", Model.CreateVoteTarget())
+            
+            <input type="submit" value="投票" />
+        }
+    }
+
+    @if (Model.CanUseSkill())
+    {
+        using (Html.BeginForm("UseSkill", "Game"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("gameId", Model.Game.Game.GameId)
+            @Html.Hidden("playerId", Model.Player.PlayerId)
+
+            if (Model.OriginalCard is OneNightWerewolf.Models.WerewolfCard)
+            {
+                <input type="submit" value="仲間を確認" />
+            }
+            else if (Model.OriginalCard is OneNightWerewolf.Models.SeerCard)
+            {
+                @Html.DropDownList("targetId", Model.CreateSkillTarget())
+                <input type="submit" value="占う" />
+            }
+            else if (Model.OriginalCard is OneNightWerewolf.Models.ThiefCard)
+            {
+                @Html.DropDownList("targetId", Model.CreateSkillTarget())
+                <input type="submit" value="カード交換" />
+            }
+        }
+    }
+
+    @if (Model.CanCommit())
+    {
+        using (Html.BeginForm("Commit", "Game", FormMethod.Post, new { style = "text-align: right;" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("playerId", Model.Player.PlayerId)
+            
+            if (Model.Player.Commited)
+            {
+                <input type="submit" value="時間を進めない" />
+            }
+            else
+            {
+                <input type="submit" value="時間を進める" />
+            }
+        }
+    }
+</fieldset>
+
+@if (Model.Game.Game.Phase == OneNightWerewolf.Models.Phase.Prologue)
+{
+    using (Html.BeginForm("Exit", "Game", FormMethod.Post, new { style = "text-align: right;" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("gameId", Model.Game.Game.GameId)
+        @Html.Hidden("playerId", Model.Player.PlayerId)
+
+        <input type="submit" value="退出" />
+    }
+}

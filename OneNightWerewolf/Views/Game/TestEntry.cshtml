@@ -1,0 +1,24 @@
+﻿@model OneNightWerewolf.Models.Entry
+
+<h3>テストエントリー</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(model => model.GameId)
+    
+    <fieldset>
+        <legend>Entry</legend>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UserId, "User")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("UserId", String.Empty)
+            @Html.ValidationMessageFor(model => model.UserId)
+            <input type="submit" value="Entry" />
+        </div>
+    </fieldset>
+}

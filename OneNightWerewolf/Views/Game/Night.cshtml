@@ -1,0 +1,73 @@
+﻿@model OneNightWerewolf.Models.GameModel
+
+@{
+    ViewBag.Title = string.Format("第{0}夜", Model.Game.GameId);
+}
+
+<hgroup class="title">
+    <h1>@string.Format("第{0}夜", Model.Game.GameId)</h1>
+    <h2>@Model.Game.GameName</h2>
+</hgroup>
+
+@Html.Partial("Information", Model)
+
+@if (Request.IsAuthenticated && Model.Game.Phase != OneNightWerewolf.Models.Phase.Close)
+{
+    if (Model.Players.Any(p => p.Player.PlayerName == User.Identity.Name))
+    {
+        <p>
+            @Html.Partial("PlayersForm", Model.Players.Find(p => p.Player.PlayerName == User.Identity.Name))
+        </p>
+    }
+    else if (Model.CanEntry())
+    {
+        using (Html.BeginForm("Entry", "Game"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("gameId", Model.Game.GameId)
+
+            <input type="submit" value="参加" />
+        }
+    }
+}
+else if (Model.CanEntry())
+{
+    <p>
+        参加するならログインしてね。
+    </p>
+}
+
+@Html.Action("Messages")
+
+@if (Request.IsAuthenticated && User.Identity.Name == "admin")
+{
+    <h2>更新</h2>
+
+    using (Html.BeginForm("TestUpdate", "Game"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("gameId", Model.Game.GameId)
+        <input type="submit" value="Update" />
+    }
+}
+
+@if (Request.IsAuthenticated && Model.Game.Phase == OneNightWerewolf.Models.Phase.Prologue)
+{
+    if (Model.Game.Creator == User.Identity.Name)
+    {
+        using (Html.BeginForm("Start", "Game"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("gameId", Model.Game.GameId)
+            <input type="submit" value="開始" />
+        }
+    }
+}
+
+<p>
+    @Html.ActionLink("戻る", "Index", "Home")
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/OneNight.js")
+}

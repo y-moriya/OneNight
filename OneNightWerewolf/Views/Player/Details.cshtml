@@ -1,0 +1,50 @@
+﻿@model OneNightWerewolf.Models.Player
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Player</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PlayerName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PlayerName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.OriginalCardId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OriginalCardId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.CurrentCardId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrentCardId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.VotePlayerId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VotePlayerId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GameId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GameId)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.PlayerId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

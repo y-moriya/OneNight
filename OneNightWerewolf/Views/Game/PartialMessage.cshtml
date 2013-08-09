@@ -1,0 +1,18 @@
+﻿@model OneNightWerewolf.Models.Message
+
+@using (Ajax.BeginForm("SendMessage", new AjaxOptions()))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.GameId)
+    @Html.HiddenFor(model => model.MessageId)
+    @Html.HiddenFor(model => model.MessageType)
+    @Html.HiddenFor(model => model.PlayerId)
+    @Html.HiddenFor(model => model.PlayerName)
+
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Content)
+        @Html.ValidationMessageFor(model => model.Content)
+        <input type="submit" value="発言" />
+    </div>
+}

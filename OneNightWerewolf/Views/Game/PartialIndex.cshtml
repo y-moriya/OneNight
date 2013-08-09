@@ -1,0 +1,46 @@
+﻿@model IEnumerable<OneNightWerewolf.Models.Game>
+
+@if (Request.IsAuthenticated)
+{
+    <p>
+        @Html.ActionLink("新規作成", "Create")
+    </p>
+}
+<table>
+    <tr>
+        <th>
+        </th>
+        <th>
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PlayerNum)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phase)
+        </th>
+        <th>
+            勝敗
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(string.Format("第{0}夜", item.GameId), "Night", new { id = item.GameId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GameName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerNum) 人
+        </td>
+        <td>
+            @item.PhaseToString()
+        </td>
+        <td>
+            @item.WonToString()
+        </td>
+    </tr>
+}
+
+</table>

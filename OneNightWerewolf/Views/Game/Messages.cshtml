@@ -1,0 +1,19 @@
+﻿@model IEnumerable<OneNightWerewolf.Models.Message>
+
+<table>
+
+@foreach (var item in Model) {
+    <tr class="@item.GetMessageTypeForClass()">
+        <td class="name">
+            @Html.DisplayFor(modelItem => item.PlayerName) >
+        </td>
+        <td class="content">
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>
+        <td class="time">
+            @Html.DisplayFor(modelItem => item.CreatedAt)
+        </td>
+    </tr>
+}
+
+</table>

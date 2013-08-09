@@ -1,0 +1,40 @@
+﻿@model OneNightWerewolf.Models.Entry
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Entry</legend>
+
+        @Html.HiddenFor(model => model.UserId)
+
+        @Html.HiddenFor(model => model.GameId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PlayerId, "Player")
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("PlayerId", String.Empty)
+            @Html.ValidationMessageFor(model => model.PlayerId)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

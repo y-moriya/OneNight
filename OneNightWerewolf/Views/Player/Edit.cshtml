@@ -1,0 +1,70 @@
+﻿@model OneNightWerewolf.Models.Player
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Player</legend>
+
+        @Html.HiddenFor(model => model.PlayerId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PlayerName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PlayerName)
+            @Html.ValidationMessageFor(model => model.PlayerName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.OriginalCardId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.OriginalCardId)
+            @Html.ValidationMessageFor(model => model.OriginalCardId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CurrentCardId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.CurrentCardId)
+            @Html.ValidationMessageFor(model => model.CurrentCardId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.VotePlayerId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.VotePlayerId)
+            @Html.ValidationMessageFor(model => model.VotePlayerId)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.GameId)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.GameId)
+            @Html.ValidationMessageFor(model => model.GameId)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

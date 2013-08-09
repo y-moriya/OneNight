@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "One Night Werewolf";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+                ワンナイト人狼のチャット版をつくったよ。見た目は適当だけど、中身はそこそこまともなはず。<br />
+                そのうち見た目もまともにします。 by @@euro_s
+            </p>
+        </div>
+    </section>
+}
+
+<h2 style="color:red;">占い師：伏せは２枚とも占えます</h2>
+<h2 style="color:red;">狂人：人狼が伏せられている場合は人狼扱いです。</h2>
+<h3>ルール</h3>
+<p>
+    @Html.ActionLink("遊び方", "About")
+</p>
+<p>
+    <a href="http://commons.nicovideo.jp/material/nc63613">ワンナイト人狼 - ルールブック</a>（外部サイト）
+</p>
+
+<h3>ゲーム一覧</h3>
+@Html.Action("PartialIndex", "Game")
+
+@if (Request.IsAuthenticated && User.Identity.Name == "admin")
+{
+    <h5>全自動</h5>
+    using (Html.BeginForm("Auto", "Game"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.DropDownList("PlayerNum")
+        <input type="submit" value="AutoCreation" />
+    }
+}

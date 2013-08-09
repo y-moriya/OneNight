@@ -1,0 +1,30 @@
+﻿@model IEnumerable<OneNightWerewolf.Models.PlayerModel>
+
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Player.PlayerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OriginalCard)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CurrentCard)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Player.PlayerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OriginalCard.CardName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CurrentCard.CardName)
+        </td>
+    </tr>
+}
+
+</table>

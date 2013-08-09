@@ -1,0 +1,76 @@
+﻿@model OneNightWerewolf.Models.Game
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Game</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.GameName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GameName)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.PlayerNum)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PlayerNum)
+    </div>
+</fieldset>
+
+@Html.Action("TestEntry", new { gameId = Model.GameId })
+
+@Html.Partial("PartialMessage", new OneNightWerewolf.Models.Message())
+
+<table>
+    <tr>
+        <th>
+            Content
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedAt)
+        </th>
+        <th>
+            Name
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (OneNightWerewolf.Models.Message item in ViewBag.Messages as IEnumerable<OneNightWerewolf.Models.Message>)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Content)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedAt)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PlayerName)
+        </td>
+    </tr>
+}
+</table>
+
+<h2>参加者</h2>
+@Html.Action("PlayersList", new { id = Model.GameId })
+
+<h2>テスト更新</h2>
+
+@using (Html.BeginForm("TestUpdate", "Game"))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.GameId)
+    <input type="submit" value="Update" />
+}
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.GameId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
