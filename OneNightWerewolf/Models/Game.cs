@@ -630,10 +630,11 @@ namespace OneNightWerewolf.Models
                 return true;
             }
 
-            if (this.Game.Phase == Phase.Night)
-            {
-                return this.Players.All(p => !p.CanUseSkill());
-            }
+            // 夜コミットはメタっぽいので廃止。
+            //if (this.Game.Phase == Phase.Night)
+            //{
+            //    return this.Players.All(p => !p.CanUseSkill());
+            //}
             
             if (this.Game.Phase == Phase.Day)
             {
