@@ -9,7 +9,7 @@
     <p>
         現在の状態：@Model.Game.PhaseToString()
     </p>
-    <p>
+    <p id="players">
         参加者 @Model.PlayerNum 名：@string.Join("、", Model.Players.Select(p => p.Player.PlayerName))
     </p>
     @if (Model.Game.NextUpdate.HasValue && Model.GetLeftTime().Seconds > 0)

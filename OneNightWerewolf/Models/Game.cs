@@ -66,11 +66,16 @@ namespace OneNightWerewolf.Models
             this.VoteAt = null;
             this.ClosedAt = null;
             this.DeletedAt = null;
-            this.NextUpdate = null;
+            this.NextUpdate = now.AddMinutes(GameModel.MINUTES_OF_DEL);
         }
 
         public string PhaseToString()
         {
+            if (this.DeletedAt != null)
+            {
+                return "削除";
+            }
+
             switch (this.Phase)
             {
                 case Phase.Prologue:
@@ -121,10 +126,11 @@ namespace OneNightWerewolf.Models
         public int PlayerNum { get { return this.Game.PlayerNum; } }
         public const int MAX_PLAYERS = 7;
         public const int MIN_PLAYERS = 3;
-        public const int TIME_OF_NIGHT = 1;
-        public const int TIME_OF_DAY = 8;
-        public const int TIME_OF_VOTE = 1;
-        public const int TIME_OF_EP = 10;
+        public const int MINUTES_OF_NIGHT = 1;
+        public const int MINUTES_OF_DAY = 8;
+        public const int MINUTES_OF_VOTE = 1;
+        public const int MINUTES_OF_EP = 10;
+        public const int MINUTES_OF_DEL = 60;
         #endregion
 
         #region Constructors
@@ -274,6 +280,12 @@ namespace OneNightWerewolf.Models
             this.SystemMessage(string.Format("{0} が退出しました。", target.Player.PlayerName));
         }
 
+        public string GetPlayersInformation()
+        {
+            return string.Format("参加者 {0} 名：{1}", this.PlayerNum,
+                string.Join("、", this.Players.Select(p => p.Player.PlayerName)));
+        }
+
         private void StartGame()
         {
             this.Game.Cards = CardFactory.CreateCardIdSetString(this.PlayerNum);
@@ -291,13 +303,13 @@ namespace OneNightWerewolf.Models
                 if (i < this.Players.Count())
                 {
                     this.Players[i].SetOriginalCard(this.cardset[i]);
-                    this.DebugMessage(string.Format("{0} に {1} を割り当てました。", this.Players[i].Player.PlayerName,
+                    this.TraceLog(string.Format("{0} に {1} を割り当てました。", this.Players[i].Player.PlayerName,
                                                                                     this.cardset[i].CardName));
                 }
                 else
                 {
                     this.SecretCards.Add(this.cardset[i]);
-                    this.DebugMessage(string.Format("伏せカードに {0} を割り当てました。", this.cardset[i].CardName));
+                    this.TraceLog(string.Format("伏せカードに {0} を割り当てました。", this.cardset[i].CardName));
                 }
             }
 
@@ -337,14 +349,14 @@ namespace OneNightWerewolf.Models
 
                     this.SecretMessage(player, string.Format("あなたの仲間は {0} です。", target.Player.PlayerName));
 
-                    this.DebugMessage(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerName, target.Player.PlayerName));
+                    this.TraceLog(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerName, target.Player.PlayerName));
                 }
                 else
                 {
                     player.Player.SkillTarget = -1;
                     player.Player.AddSkillResult(-1);
                     this.SecretMessage(player, "あなたの仲間はいませんでした。");
-                    this.DebugMessage(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerName));
                 }
             }
             else if (player.OriginalCard is SeerCard)
@@ -356,12 +368,12 @@ namespace OneNightWerewolf.Models
                     {
                         player.Player.AddSkillResult(secret.CardId);
                         this.SecretMessage(player, string.Format("伏せカードは {0} でした。", secret.CardName));
-                        
+
                         // 伏せカードのうち、1枚だけ占う
                         //break;
                     }
 
-                    this.DebugMessage(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerName));
                 }
                 else
                 {
@@ -370,7 +382,7 @@ namespace OneNightWerewolf.Models
                     player.Player.AddSkillResult(target.OriginalCard.CardId);
 
                     this.SecretMessage(player, string.Format("{0} は {1} でした。", target.Player.PlayerName, target.OriginalCard.CardName));
-                    this.DebugMessage(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerName, target.Player.PlayerName, target.OriginalCard.CardName));
+                    this.TraceLog(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerName, target.Player.PlayerName, target.OriginalCard.CardName));
                 }
             }
             else if (player.OriginalCard is ThiefCard)
@@ -383,7 +395,7 @@ namespace OneNightWerewolf.Models
                     player.SetCurrentCard(player.OriginalCard);
 
                     this.SecretMessage(player, "あなたはカードを交換しませんでした。");
-                    this.DebugMessage(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerName));
                 }
                 else
                 {
@@ -394,9 +406,9 @@ namespace OneNightWerewolf.Models
                     target.SetCurrentCard(player.OriginalCard);
 
                     this.SecretMessage(player, string.Format("あなたは {0} とカードを交換し、 {1} になりました。", target.Player.PlayerName, target.OriginalCard.CardName));
-                    this.DebugMessage(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerName, target.Player.PlayerName));
-                    this.DebugMessage(string.Format("{0} のカードは {1} です。", player.Player.PlayerName, player.CurrentCard.CardName));
-                    this.DebugMessage(string.Format("{0} のカードは {1} です。", target.Player.PlayerName, target.CurrentCard.CardName));
+                    this.TraceLog(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerName, target.Player.PlayerName));
+                    this.TraceLog(string.Format("{0} のカードは {1} です。", player.Player.PlayerName, player.CurrentCard.CardName));
+                    this.TraceLog(string.Format("{0} のカードは {1} です。", target.Player.PlayerName, target.CurrentCard.CardName));
 
                 }
 
@@ -428,6 +440,15 @@ namespace OneNightWerewolf.Models
 
             this.SystemMessage("すべての能力が使用され、夜時間が終了しました。昼時間を開始します。");
         }
+
+        public bool Commit(int playerId)
+        {
+            var player = db.Players.Find(playerId);
+            player.Commited = !player.Commited;
+            db.SaveChanges();
+
+            return player.Commited;
+        }
         #endregion
 
         #region Vote
@@ -448,7 +469,7 @@ namespace OneNightWerewolf.Models
             player.Vote(target.Player.PlayerId);
 
             this.SecretMessage(player, string.Format("あなたは {0} に投票しました。", target.Player.PlayerName));
-            this.DebugMessage(string.Format("{0} が {1} に投票しました。", player.Player.PlayerName, target.Player.PlayerName));
+            this.TraceLog(string.Format("{0} が {1} に投票しました。", player.Player.PlayerName, target.Player.PlayerName));
 
             this.db.SaveChanges();
         }
@@ -458,7 +479,7 @@ namespace OneNightWerewolf.Models
             var t = GetRandomPlayerWithoutSelf(player.Player.PlayerId);
             player.Vote(t.Player.PlayerId);
             this.SecretMessage(player, string.Format("あなたは {0} にランダム投票しました。", t.Player.PlayerName));
-            this.DebugMessage(string.Format("{0} が {1} にランダム投票しました。", player.Player.PlayerName, t.Player.PlayerName));
+            this.TraceLog(string.Format("{0} が {1} にランダム投票しました。", player.Player.PlayerName, t.Player.PlayerName));
         }
 
         #endregion
@@ -565,18 +586,23 @@ namespace OneNightWerewolf.Models
             this.db.SaveChanges();
         }
 
-        public void DebugMessage(string str)
+        public void TraceLog(string str, LogLevel logLevel = LogLevel.Information)
         {
-            var m = new Message()
-            {
-                Content = str,
-                GameId = this.Game.GameId,
-                MessageType = MessageType.Debug,
-                PlayerName = "Debug",
-            };
+            string message = string.Format("GameId:{0}, Message:{1}", this.Game.GameId, str);
 
-            this.db.Messages.Add(m);
-            this.db.SaveChanges();
+            switch (logLevel)
+            {
+                case LogLevel.Error:
+                    System.Diagnostics.Trace.TraceError(message);
+                    break;
+                case LogLevel.Warning:
+                    System.Diagnostics.Trace.TraceWarning(message);
+                    break;
+                case LogLevel.Information:
+                default:
+                    System.Diagnostics.Trace.TraceInformation(message);
+                    break;
+            }
         }
 
         public void SendMessage(Message message)
@@ -621,12 +647,35 @@ namespace OneNightWerewolf.Models
         #endregion
 
         #region Update
+        public void Delete()
+        {
+            if (this.Game.Phase != Phase.Prologue)
+            {
+                return;
+            }
+
+            this.SystemMessage("一定時間開始されなかったため、このゲームは終了しました。");
+
+            var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now.ToUniversalTime(), "Tokyo Standard Time");
+
+            this.Game.NextUpdate = null;
+            this.Game.DeletedAt = now;
+            this.Game.Phase = Phase.Close;
+
+            this.db.SaveChanges();
+        }
+
         public bool DoUpdate()
         {
             var now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now.ToUniversalTime(), "Tokyo Standard Time");
 
             if (this.Game.NextUpdate.HasValue && this.Game.NextUpdate.Value < now)
             {
+                if (this.Game.Phase == Phase.Prologue)
+                {
+                    this.Delete();
+                    return false;
+                }
                 return true;
             }
 
@@ -635,7 +684,7 @@ namespace OneNightWerewolf.Models
             //{
             //    return this.Players.All(p => !p.CanUseSkill());
             //}
-            
+
             if (this.Game.Phase == Phase.Day)
             {
                 return this.Players.All(p => p.Player.Commited);
@@ -694,22 +743,22 @@ namespace OneNightWerewolf.Models
             switch (this.Game.Phase)
             {
                 case Phase.Prologue:
-                    this.SetTimer(TIME_OF_NIGHT);
+                    this.SetTimer(MINUTES_OF_NIGHT);
                     this.Game.StartedAt = now;
                     this.StartGame();
                     break;
                 case Phase.Night:
-                    this.SetTimer(TIME_OF_DAY);
+                    this.SetTimer(MINUTES_OF_DAY);
                     this.Game.DayAt = now;
                     this.StartDay();
                     break;
                 case Phase.Day:
-                    this.SetTimer(TIME_OF_VOTE);
+                    this.SetTimer(MINUTES_OF_VOTE);
                     this.Game.VoteAt = now;
                     this.StartVote();
                     break;
                 case Phase.Voting:
-                    this.SetTimer(TIME_OF_EP);
+                    this.SetTimer(MINUTES_OF_EP);
                     this.Game.JudgeAt = now;
                     this.Judgement();
                     break;
@@ -723,7 +772,15 @@ namespace OneNightWerewolf.Models
 
             this.Game.Phase = this.Game.Phase + 1;
 
-            this.db.SaveChanges();
+            try
+            {
+                this.db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                this.TraceLog(e.Message, LogLevel.Error);
+                this.TraceLog(e.StackTrace, LogLevel.Error);
+            }
         }
 
         public void SetTimer(int minutes)
@@ -737,7 +794,7 @@ namespace OneNightWerewolf.Models
 
             //this.Game.NextUpdate = this.Game.NextUpdate.Value.AddMinutes(minutes);
             this.Game.NextUpdate = now.AddMinutes(minutes);
-            this.DebugMessage(string.Format("次回更新時間を {0} に設定しました。", this.Game.NextUpdate.ToString()));
+            this.TraceLog(string.Format("次回更新時間を {0} に設定しました。", this.Game.NextUpdate.ToString()));
         }
         #endregion
 
@@ -753,5 +810,12 @@ namespace OneNightWerewolf.Models
         Voting,
         Epilogue,
         Close
+    }
+
+    public enum LogLevel
+    {
+        Error,
+        Warning,
+        Information
     }
 }

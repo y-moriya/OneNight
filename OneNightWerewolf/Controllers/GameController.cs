@@ -322,6 +322,8 @@ namespace OneNightWerewolf.Controllers
             {
                 db.Games.Add(game);
                 db.SaveChanges();
+
+                var gm = new GameModel(game.GameId);
                 return RedirectToAction("Night", new { id = game.GameId });
             }
 

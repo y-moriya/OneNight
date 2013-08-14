@@ -18,9 +18,9 @@ namespace OneNightWerewolf
             //    clientId: "",
             //    clientSecret: "");
 
-            //OAuthWebSecurity.RegisterTwitterClient(
-            //    consumerKey: "",
-            //    consumerSecret: "");
+            OAuthWebSecurity.RegisterTwitterClient(
+                consumerKey: "hVPsAe1BPYEE98kGtgXxYA",
+                consumerSecret: "n4lX8MSOLA6kIkhhdLrznFg7tn5hTFi4UDalEBrevE");
 
             //OAuthWebSecurity.RegisterFacebookClient(
             //    appId: "",

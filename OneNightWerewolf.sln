@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Web
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNightWerewolf", "OneNightWerewolf\OneNightWerewolf.csproj", "{26346B6D-2015-44E9-A9EF-34D8465529B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneNightWerewolf.Tests", "OneNightWerewolf.Tests\OneNightWerewolf.Tests.csproj", "{E3BDF051-206D-4B92-9321-0AE127D82FCA}"
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "WindowsAzure1", "WindowsAzure1\WindowsAzure1.ccproj", "{D3DE0D70-92F0-474B-97BE-33A262EC088E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,10 @@ Global
 		{26346B6D-2015-44E9-A9EF-34D8465529B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26346B6D-2015-44E9-A9EF-34D8465529B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26346B6D-2015-44E9-A9EF-34D8465529B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E3BDF051-206D-4B92-9321-0AE127D82FCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E3BDF051-206D-4B92-9321-0AE127D82FCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E3BDF051-206D-4B92-9321-0AE127D82FCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E3BDF051-206D-4B92-9321-0AE127D82FCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3DE0D70-92F0-474B-97BE-33A262EC088E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3DE0D70-92F0-474B-97BE-33A262EC088E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3DE0D70-92F0-474B-97BE-33A262EC088E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3DE0D70-92F0-474B-97BE-33A262EC088E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -156,6 +156,14 @@ namespace OneNightWerewolf.Models
             };
         }
 
+        public Message CreateMessage(string content)
+        {
+            var message = this.CreateMessage();
+            message.Content = content;
+
+            return message;
+        }
+
         public SelectList CreateVoteTarget()
         {
             var targets = this.Game.Players.Where(p => p.Player.PlayerId != this.Player.PlayerId);
@@ -210,6 +218,10 @@ namespace OneNightWerewolf.Models
             }
             else
             {
+                if (this.OriginalCard == null || this.CurrentCard == null)
+                {
+                    return string.Empty;
+                }
                 if (this.OriginalCard.CardId != this.CurrentCard.CardId)
                 {
                     return string.Format("{0} （元{1}）", this.CurrentCard.CardName, this.OriginalCard.CardName);

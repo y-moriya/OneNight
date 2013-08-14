@@ -54,11 +54,11 @@
             
             if (Model.Player.Commited)
             {
-                <input type="submit" value="時間を進めない" />
+                <input type="button" id="commit" value="時間を進めない" disabled="disabled" />
             }
             else
             {
-                <input type="submit" value="時間を進める" />
+                <input type="button" id="commit" value="時間を進める" disabled="disabled" />
             }
         }
     }
@@ -72,6 +72,11 @@
         @Html.Hidden("gameId", Model.Game.Game.GameId)
         @Html.Hidden("playerId", Model.Player.PlayerId)
 
-        <input type="submit" value="退出" />
+        <input type="button" id="exit" value="退出" />
     }
 }
+
+@Html.Hidden("hGameId", Model.Game.Game.GameId)
+@Html.Hidden("hPlayerId", Model.Player.PlayerId)
+@Html.Hidden("hPlayerName", Model.Player.PlayerName)
+@Html.Hidden("hPhase", Model.Game.Game.Phase)

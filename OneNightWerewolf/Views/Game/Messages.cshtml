@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<OneNightWerewolf.Models.Message>
 
-<table>
+<table id="messages">
 
 @foreach (var item in Model) {
     <tr class="@item.GetMessageTypeForClass()">

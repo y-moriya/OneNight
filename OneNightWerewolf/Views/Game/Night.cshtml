@@ -26,7 +26,7 @@
             @Html.AntiForgeryToken()
             @Html.Hidden("gameId", Model.Game.GameId)
 
-            <input type="submit" value="参加" />
+            <input type="submit" id="entry" value="参加" />
         }
     }
 }
@@ -59,7 +59,7 @@ else if (Model.CanEntry())
         {
             @Html.AntiForgeryToken()
             @Html.Hidden("gameId", Model.Game.GameId)
-            <input type="submit" value="開始" />
+            <input type="button" id="start" value="開始" disabled="disabled" />
         }
     }
 }

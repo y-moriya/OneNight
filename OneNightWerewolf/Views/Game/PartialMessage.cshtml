@@ -13,6 +13,6 @@
     <div class="editor-field">
         @Html.EditorFor(model => model.Content)
         @Html.ValidationMessageFor(model => model.Content)
-        <input type="submit" value="発言" />
+        <input type="button" id="send" value="発言" disabled="disabled" />
     </div>
 }
