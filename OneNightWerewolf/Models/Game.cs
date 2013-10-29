@@ -21,6 +21,11 @@ namespace OneNightWerewolf.Models
             return user.UserId;
         }
 
+        public UserProfile GetUserProfile(string name)
+        {
+            return this.UserProfiles.First(u => u.UserName == name);
+        }
+
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Message> Messages { get; set; }
@@ -43,6 +48,7 @@ namespace OneNightWerewolf.Models
         public string Cards { get; set; }
         public bool WerewolfWon { get; set; }
         public string Creator { get; set; }
+        public GameType GameType { get; set; }
 
         [Timestamp]
         public byte[] Version { get; set; }
@@ -67,6 +73,7 @@ namespace OneNightWerewolf.Models
             this.ClosedAt = null;
             this.DeletedAt = null;
             this.NextUpdate = now.AddMinutes(GameModel.MINUTES_OF_DEL);
+            this.GameType = Models.GameType.Advance;
         }
 
         public string PhaseToString()
@@ -214,7 +221,7 @@ namespace OneNightWerewolf.Models
                 return false;
             }
 
-            if (this.Players.Any(pl => pl.Player.PlayerName == p.Player.PlayerName))
+            if (this.Players.Any(pl => pl.Player.PlayerUserName == p.Player.PlayerUserName))
             {
                 return false;
             }
@@ -241,7 +248,7 @@ namespace OneNightWerewolf.Models
 
             this.db.SaveChanges();
 
-            int userId = this.db.GetUserId(p.Player.PlayerName);
+            int userId = this.db.GetUserId(p.Player.PlayerUserName);
             Entry entry = new Entry()
             {
                 GameId = this.Game.GameId,
@@ -252,7 +259,7 @@ namespace OneNightWerewolf.Models
             this.db.Entries.Add(entry);
             this.db.SaveChanges();
 
-            this.SystemMessage(string.Format("{0} が参加しました。", p.Player.PlayerName));
+            this.SystemMessage(string.Format("{0} @{1} が参加しました。", p.Player.PlayerName, p.Player.PlayerUserName));
 
             return true;
         }
@@ -277,7 +284,7 @@ namespace OneNightWerewolf.Models
 
             this.db.SaveChanges();
 
-            this.SystemMessage(string.Format("{0} が退出しました。", target.Player.PlayerName));
+            this.SystemMessage(string.Format("{0} @{1} が退出しました。", target.Player.PlayerName, target.Player.PlayerUserName));
         }
 
         public string GetPlayersInformation()
@@ -580,6 +587,7 @@ namespace OneNightWerewolf.Models
                 GameId = this.Game.GameId,
                 MessageType = MessageType.System,
                 PlayerName = "System",
+                IconUri = "~/Images/sysicon.png"
             };
 
             this.db.Messages.Add(m);
@@ -632,6 +640,8 @@ namespace OneNightWerewolf.Models
                 MessageType = MessageType.Secret,
                 PlayerId = player.Player.PlayerId,
                 PlayerName = player.Player.PlayerName,
+                PlayerUserName = player.Player.PlayerUserName,
+                IconUri = "~/Images/secreticon.png"
             };
 
             this.db.Messages.Add(m);
@@ -642,6 +652,11 @@ namespace OneNightWerewolf.Models
         {
             return this.Messages.Where(m => m.Visible(playerId, this.Game.Phase))
                                 .OrderByDescending(m => m.MessageId).ToList();
+        }
+
+        public List<Message> GetMessages(int playerId, int messageId)
+        {
+            return this.GetMessages(playerId).Where(m => m.MessageId > messageId).ToList();
         }
 
         #endregion
@@ -803,7 +818,6 @@ namespace OneNightWerewolf.Models
 
     public enum Phase
     {
-
         Prologue,
         Night,
         Day,
@@ -817,5 +831,11 @@ namespace OneNightWerewolf.Models
         Error,
         Warning,
         Information
+    }
+
+    public enum GameType
+    {
+        Classic,
+        Advance
     }
 }

@@ -25,7 +25,15 @@ namespace OneNightWerewolf.Models
         public int GameId { get; set; }
 
         public int PlayerId { get; set; }
+        /// <summary>
+        /// 一意なユーザー名
+        /// </summary>
+        public string PlayerUserName { get; set; }
+        /// <summary>
+        /// 表示用の名称
+        /// </summary>
         public string PlayerName { get; set; }
+        public string IconUri { get; set; }
         public MessageType MessageType { get; set; }
 
         public Message()

@@ -1,6 +1,6 @@
 ﻿@model OneNightWerewolf.Models.Message
 
-@using (Ajax.BeginForm("SendMessage", new AjaxOptions()))
+@using (Ajax.BeginForm("SendMessage", "", new AjaxOptions(), new { id = "SendMessageForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
@@ -9,10 +9,12 @@
     @Html.HiddenFor(model => model.MessageType)
     @Html.HiddenFor(model => model.PlayerId)
     @Html.HiddenFor(model => model.PlayerName)
+    @Html.HiddenFor(model => model.PlayerUserName)
+    @Html.HiddenFor(model => model.IconUri)
 
     <div class="editor-field">
-        @Html.EditorFor(model => model.Content)
+        @Html.TextBoxFor(model => model.Content, new { tabindex = 1 })
         @Html.ValidationMessageFor(model => model.Content)
-        <input type="button" id="send" value="発言" disabled="disabled" />
+        <input type="button" id="send" value="発言" disabled="disabled" tabindex="2" />
     </div>
 }

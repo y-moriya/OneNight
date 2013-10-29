@@ -16,8 +16,6 @@
     </section>
 }
 
-<h2 style="color:red;">占い師：伏せは２枚とも占えます</h2>
-<h2 style="color:red;">狂人：人狼が伏せられている場合は人狼扱いです。</h2>
 <h3>ルール</h3>
 <p>
     @Html.ActionLink("遊び方", "About")
@@ -29,7 +27,7 @@
 <h3>ゲーム一覧</h3>
 @Html.Action("PartialIndex", "Game")
 
-@if (Request.IsAuthenticated && User.Identity.Name == "admin")
+@if (Request.IsAuthenticated && User.Identity.Name == "roka_pokelove")
 {
     <h5>全自動</h5>
     using (Html.BeginForm("Auto", "Game"))

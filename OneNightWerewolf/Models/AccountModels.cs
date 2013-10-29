@@ -14,7 +14,15 @@ namespace OneNightWerewolf.Models
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
+        /// <summary>
+        /// 一意なユーザー名
+        /// </summary>
         public string UserName { get; set; }
+        /// <summary>
+        /// 表示用の名称
+        /// </summary>
+        public string Name { get; set; }
+        public string IconUri { get; set; }
     }
 
     public class RegisterExternalLoginModel

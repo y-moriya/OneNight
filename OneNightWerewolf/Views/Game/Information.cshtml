@@ -4,10 +4,13 @@
 <fieldset>
     <legend>情報</legend>
     <p>
-        作成者：@Model.Game.Creator
+        作成者：@@@Model.Game.Creator
     </p>
     <p>
         現在の状態：@Model.Game.PhaseToString()
+    </p>
+    <p>
+        接続状況：<span id="connection">接続中</span>
     </p>
     <p id="players">
         参加者 @Model.PlayerNum 名：@string.Join("、", Model.Players.Select(p => p.Player.PlayerName))
@@ -58,3 +61,16 @@
         </p>
     }
 </fieldset>
+
+@if (Request.IsAuthenticated && Model.Game.Phase == OneNightWerewolf.Models.Phase.Prologue)
+{
+    if (Model.Game.Creator == User.Identity.Name)
+    {
+        using (Html.BeginForm("Start", "Game"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("gameId", Model.Game.GameId)
+            <input type="button" id="start" value="ゲームを開始する" disabled="disabled" />
+        }
+    }
+}

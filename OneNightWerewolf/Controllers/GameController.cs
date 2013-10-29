@@ -16,7 +16,7 @@ namespace OneNightWerewolf.Controllers
 
         //
         // GET: /Game/
-
+        [GamesFilter]
         public ActionResult Night(int id)
         {
             var game = new GameModel(id);
@@ -25,13 +25,14 @@ namespace OneNightWerewolf.Controllers
                 game.UpdatePhase();
             }
 
+            ViewBag.ReturnUrl = Url.Action("Night", new { id = id });
             return View(game);
         }
 
         public ActionResult Messages(int id)
         {
             var game = new GameModel(id);
-            var player = game.Players.Find(p => p.Player.PlayerName == User.Identity.Name);
+            var player = game.Players.Find(p => p.Player.PlayerUserName == User.Identity.Name);
             int playerId = 0;
             if (player != null)
             {
@@ -56,7 +57,7 @@ namespace OneNightWerewolf.Controllers
         public ActionResult PlayersForm(int id)
         {
             var game = new GameModel(id);
-            var player = game.Players.Find(p => p.Player.PlayerName == User.Identity.Name);
+            var player = game.Players.Find(p => p.Player.PlayerUserName == User.Identity.Name);
 
             return PartialView(player);
         }
@@ -93,7 +94,7 @@ namespace OneNightWerewolf.Controllers
                 return RedirectToAction("Night", new { id = message.GameId });
             }
 
-            if (message.PlayerName != User.Identity.Name)
+            if (message.PlayerUserName != User.Identity.Name)
             {
                 return RedirectToAction("Night", new { id = message.GameId });
             }
@@ -139,103 +140,12 @@ namespace OneNightWerewolf.Controllers
             return RedirectToAction("Night", new { id = player.GameId });
         }
 
-        //
-        // GET: /Game/TestEntry
-
-        public ActionResult TestEntry(int gameId)
-        {
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName");
-            ViewBag.GameId = gameId;
-            return PartialView();
-        }
-
-        //
-        // POST: /Game/TestEntry
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult TestEntry(Entry entry)
-        {
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName");
-            ViewBag.GameId = entry.GameId;
-
-            if (db.Entries.Find(entry.UserId, entry.GameId) != null)
-            {
-                return PartialView();
-            }
-
-            var player = new PlayerModel(db.UserProfiles.Find(entry.UserId).UserName);
-            var game = new GameModel(entry.GameId);
-
-            if (ModelState.IsValid && game.AddPlayer(player))
-            {
-                entry.PlayerId = player.Player.PlayerId;
-                //db.Entries.Add(entry);
-                db.SaveChanges();
-
-                return PartialView();
-            }
-
-            return PartialView();
-        }
-
-
-
-        //
-        // GET: /Game/TestExit
-
-        public ActionResult TestExit(int gameId)
-        {
-            var entries = db.Entries.Where(e => e.GameId == gameId);
-            var users = db.UserProfiles.Where(u => entries.Any(e => e.UserId == u.UserId));
-            ViewBag.UserId = new SelectList(users, "UserId", "UserName");
-            ViewBag.GameId = gameId;
-            return PartialView();
-        }
-
-
-        //
-        // POST: /Game/TestExit
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult TestExit(Entry entry)
-        {
-            var entries = db.Entries.Where(e => e.GameId == entry.GameId);
-            var users = db.UserProfiles.Where(u => entries.Any(e => e.UserId == u.UserId));
-            ViewBag.UserId = new SelectList(users, "UserId", "UserName");
-            ViewBag.GameId = entry.GameId;
-
-            var tempEntry = db.Entries.Find(entry.UserId, entry.GameId);
-            if (tempEntry == null)
-            {
-                return PartialView();
-            }
-            else
-            {
-                entry = tempEntry;
-            }
-
-            if (ModelState.IsValid)
-            {
-                var game = new GameModel(entry.GameId);
-                game.RemovePlayer(entry.PlayerId);
-
-                //db.Entries.Remove(entry);
-                db.SaveChanges();
-
-                return PartialView();
-            }
-
-            return PartialView();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Entry(int gameId)
         {
             var game = new GameModel(gameId);
-            var player = new PlayerModel(User.Identity.Name);
+            var player = new PlayerModel(db.GetUserProfile(User.Identity.Name));
             game.AddPlayer(player);
 
             return RedirectToAction("Night", new { id = gameId });
@@ -281,7 +191,7 @@ namespace OneNightWerewolf.Controllers
             var game = new GameModel("AutoTestGame");
             for (int i = 0; i < PlayerNum; i++)
             {
-                var player = new PlayerModel("User" + i);
+                var player = new PlayerModel(new UserProfile() { UserName = "User" + i, Name = "User" + i });
                 game.AddPlayer(player);
             }
 
@@ -328,17 +238,6 @@ namespace OneNightWerewolf.Controllers
             }
 
             return View(game);
-        }
-
-        [HttpPost]
-        public ActionResult TestCreate()
-        {
-            Game game = new Game();
-            game.GameName = "TestGame" + (db.Games.Count() + 1);
-            db.Games.Add(game);
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
         }
 
         //

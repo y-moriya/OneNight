@@ -10,6 +10,10 @@ using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
 using OneNightWerewolf.Filters;
 using OneNightWerewolf.Models;
+using TweetSharp;
+using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace OneNightWerewolf.Controllers
 {
@@ -239,10 +243,28 @@ namespace OneNightWerewolf.Controllers
                 return RedirectToAction("ExternalLoginFailure");
             }
 
-            
+            var service = new TwitterService(AuthConfig.TW_CONSUMER_KEY, AuthConfig.TW_CONSUMER_SECRET);
+            service.AuthenticateWith(result.ExtraData["accesstoken"], result.ExtraData["accesssecret"]);
+            var prof = service.GetUserProfile(new GetUserProfileOptions() { IncludeEntities = true });
+            string iconUri = this.SaveUserIcon(prof);
+            string userName = prof.ScreenName;
+            string name = prof.Name;
 
             if (OAuthWebSecurity.Login(result.Provider, result.ProviderUserId, createPersistentCookie: false))
             {
+                using (GamesContext db = new GamesContext())
+                {
+                    string existUserName = OAuthWebSecurity.GetUserName(result.Provider, result.ProviderUserId);
+                    UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == existUserName.ToLower());
+                    if (user != null)
+                    {
+                        user.UserName = userName;
+                        user.IconUri = iconUri;
+                        user.Name = name;
+                    }
+
+                    db.SaveChanges();
+                }
                 return RedirectToLocal(returnUrl);
             }
 
@@ -254,12 +276,35 @@ namespace OneNightWerewolf.Controllers
             }
             else
             {
-                // ユーザーは新規なので、希望するメンバーシップ名を要求します
-                string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
-                ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
-                ViewBag.ReturnUrl = returnUrl;
-                return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
+
+                using (GamesContext db = new GamesContext())
+                {
+                    UserProfile user = db.UserProfiles.FirstOrDefault(u => u.UserName.ToLower() == userName.ToLower());
+                    // ユーザーが既に存在するかどうかを確認します
+                    if (user == null)
+                    {
+                        // プロファイル テーブルに名前を挿入します
+                        db.UserProfiles.Add(new UserProfile { UserName = userName, Name = name, IconUri = iconUri });
+                        db.SaveChanges();
+
+                        OAuthWebSecurity.CreateOrUpdateAccount(result.Provider, result.ProviderUserId, userName);
+                        OAuthWebSecurity.Login(result.Provider, result.ProviderUserId, createPersistentCookie: false);
+
+                        return RedirectToLocal(returnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("ExternalLoginFailure");
+                    }
+                }
+
+                //// ユーザーは新規なので、希望するメンバーシップ名を要求します
+                //string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
+                //ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
+                //ViewBag.ReturnUrl = returnUrl;
+                //return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
             }
+
         }
 
         //
@@ -347,6 +392,30 @@ namespace OneNightWerewolf.Controllers
         }
 
         #region ヘルパー
+        private string SaveUserIcon(TwitterUser user)
+        {
+
+            string connectionString = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
+            var account = CloudStorageAccount.Parse(connectionString);
+            CloudBlobClient blobClient = account.CreateCloudBlobClient();
+            CloudBlobContainer container = blobClient.GetContainerReference("images");
+            if (container.CreateIfNotExists())
+            {
+                var permissions = new BlobContainerPermissions();
+                permissions.PublicAccess = BlobContainerPublicAccessType.Container;
+                container.SetPermissions(permissions);
+            }
+
+            string imageUrl = user.ProfileImageUrl.Replace("normal", "mini");
+            string guid = Guid.NewGuid().ToString();
+            string ext = System.IO.Path.GetExtension(imageUrl);
+            CloudBlockBlob blob = container.GetBlockBlobReference(guid + ext);
+            System.Net.WebClient wc = new System.Net.WebClient();
+            blob.UploadFromStream(wc.OpenRead(imageUrl));
+
+            return blob.Uri.AbsoluteUri;
+        }
+
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))

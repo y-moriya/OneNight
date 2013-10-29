@@ -15,7 +15,15 @@ namespace OneNightWerewolf.Models
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int PlayerId { get; set; }
+        /// <summary>
+        /// 一意なユーザー名
+        /// </summary>
+        public string PlayerUserName { get; set; }
+        /// <summary>
+        /// 表示用の名称
+        /// </summary>
         public string PlayerName { get; set; }
+        public string IconUri { get; set; }
         public int OriginalCardId { get; set; }
         public int CurrentCardId { get; set; }
         public int VotePlayerId { get; set; }
@@ -52,10 +60,12 @@ namespace OneNightWerewolf.Models
         public Card CurrentCard { get; private set; }
         public int VotedCount { get; set; }
 
-        public PlayerModel(string name)
+        public PlayerModel(UserProfile user)
         {
             this.Player = new Player();
-            this.Player.PlayerName = name;
+            this.Player.PlayerName = user.Name;
+            this.Player.PlayerUserName = user.UserName;
+            this.Player.IconUri = user.IconUri;
         }
 
         public PlayerModel(Player p, GameModel game)
@@ -152,7 +162,9 @@ namespace OneNightWerewolf.Models
                 GameId = this.Player.GameId,
                 MessageType = MessageType.Player,
                 PlayerId = this.Player.PlayerId,
-                PlayerName = this.Player.PlayerName
+                PlayerName = this.Player.PlayerName,
+                PlayerUserName = this.Player.PlayerUserName,
+                IconUri = this.Player.IconUri
             };
         }
 

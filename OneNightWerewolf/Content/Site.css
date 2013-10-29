@@ -6,10 +6,9 @@
 
 body {
     background-color: #fff;
-    border-top: solid 10px #000;
     color: #333;
     font-size: .85em;
-    font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+    font-family: "新ゴ M", "Segoe UI", Verdana, Helvetica, Sans-Serif;
     margin: 0;
     padding: 0;
 }
@@ -100,6 +99,7 @@ h5, h6 {
 
 #body {
     background-color: #efeeef;
+    /*background-color: #e2e2e2;*/
     clear: both;
     padding-bottom: 35px;
 }
@@ -135,6 +135,21 @@ footer {
     margin: 0;
 }
 
+.logo {
+    color: #c8c8c8;
+    font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
+    font-size: 1.6em;
+    text-align: center;
+    width: 150px;
+    margin: 0;
+}
+
+.logo a, .logo a:hover, .logo a:active {
+    background: none;
+    color: #c8c8c8;
+    outline: none;
+    text-decoration: none;
+}
 .site-title a, .site-title a:hover, .site-title a:active {
     background: none;
     color: #c8c8c8;
@@ -147,16 +162,13 @@ footer {
 ----------------------------------------------------------*/
 #login {
     display: block;
-    font-size: .85em;
-    margin: 0 0 10px;
-    text-align: right;
+    font-size: 1.0em;
+    margin: 15px 10px;
+    text-align: center;
 }
-
     #login a {
         background-color: #d3dce0;
-        margin-left: 10px;
-        margin-right: 3px;
-        padding: 2px 3px;
+        padding: 10px;
         text-decoration: none;
     }
 
@@ -176,6 +188,10 @@ footer {
         list-style: none;
     }
 
+    #login div {
+        float: right;
+        margin-right: 5px;
+    }
 
 /* menu
 ----------------------------------------------------------*/
@@ -305,12 +321,12 @@ ol.round {
 
 /* content */
 article {
-    float: left;
+    float: right;
     width: 70%;
 }
 
 aside {
-    float: right;
+    float: left;
     width: 25%;
 }
 
@@ -326,6 +342,51 @@ aside {
 
 .label {
     font-weight: 700;
+}
+
+/* Nights */
+#lefttime {
+    font-size: 1.5em;
+    color: red;
+}
+
+div.content {
+    display: block;
+    margin-top: 5px;
+}
+
+    div.content p {
+        margin: 0;
+    }
+        div.content p.system {
+            color: blue;
+        }
+        div.content p.secret {
+            color: gray;
+        }
+
+div.header {
+    margin: 1px;
+    font-size: 0.85em;
+}
+img.icon {
+    float: left;
+    margin-top: 5px;
+    margin-right: 3px;
+}
+
+strong.name {
+    /*color: #7ac0da;*/
+}
+
+span.username {
+    color: #999;
+}
+
+.time {
+    position: relative;
+    float: right;
+    color: #999;
 }
 
 /* login page */
@@ -595,174 +656,22 @@ tr.secret {
     color: gray;
 }
 
-/********************
-*   Mobile Styles   *
-********************/
-@media only screen and (max-width: 850px) {
+td.time {
+    font-size: 0.8em;
+}
 
-    /* header
-    ----------------------------------------------------------*/
-    header .float-left,
-    header .float-right {
-        float: none;
-    }
+/* box */
+.boxContainer {
+	overflow: hidden;
+}
 
-    /* logo */
-    header .site-title {
-        margin: 10px;
-        text-align: center;
-    }
-
-    /* login */
-    #login {
-        font-size: .85em;
-        margin: 0 0 12px;
-        text-align: center;
-    }
-
-        #login ul {
-            margin: 5px 0;
-            padding: 0;
-        }
-
-        #login li {
-            display: inline;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        #login a {
-            background: none;
-            color: #999;
-            font-weight: 600;
-            margin: 2px;
-            padding: 0;
-        }
-
-        #login a:hover {
-            color: #333;
-        }
-
-    /* menu */
-    nav {
-        margin-bottom: 5px;
-    }
-
-    ul#menu {
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
-
-        ul#menu li {
-            margin: 0;
-            padding: 0;
-        }
-
-
-    /* main layout
-    ----------------------------------------------------------*/
-    .main-content,
-    .featured + .main-content {
-        background-position: 10px 0;
-    }
-
-    .content-wrapper {
-        padding-right: 10px;
-        padding-left: 10px;
-    }
-
-    .featured .content-wrapper {
-        padding: 10px;
-    }
-
-    /* page content */
-    article, aside {
-        float: none;
-        width: 100%;
-    }
-    
-    #lefttime {
-        font-size: 1.5em;
-        color: red;
-    }
-
-    /* ordered list */
-    ol.round {
-        list-style-type: none;
-        padding-left: 0;
-    }
-
-        ol.round li {
-            padding-left: 10px;
-            margin: 25px 0;
-        }
-
-            ol.round li.zero,
-            ol.round li.one,
-            ol.round li.two,
-            ol.round li.three,
-            ol.round li.four,
-            ol.round li.five,
-            ol.round li.six,
-            ol.round li.seven,
-            ol.round li.eight,
-            ol.round li.nine {
-                background: none;
-            }
-
-     /* features */
-     section.feature {
-        float: none;
-        padding: 10px;
-        width: auto;
-     }
-
-        section.feature img {
-            color: #999;
-            content: attr(alt);
-            font-size: 1.5em;
-            font-weight: 600;
-        }
-
-    /* forms */
-    input {
-        width: 90%;
-    }
-
-    /* login page */
-    #loginForm {
-        border-right: none;
-        float: none;
-        width: auto;
-    }
-
-        #loginForm .validation-error {
-            display: block;
-            margin-left: 15px;
-        }
-
-    #socialLoginForm {
-        margin-left: 0;
-        float: none;
-        width: auto;
-    }
-
-    /* footer
-    ----------------------------------------------------------*/
-    footer .float-left,
-    footer .float-right {
-        float: none;
-    }
-
-    footer {
-        text-align: center;
-        height: auto;
-        padding: 10px 0;
-    }
-
-        footer p {
-            margin: 0;
-        }
+/* clearfix */
+.boxContainer:before,
+.boxContainer:after {
+    content: "";
+    display: table;
+}
+ 
+.boxContainer:after {
+    clear: both;
 }
