@@ -10,14 +10,14 @@ namespace OneNightWerewolf.Hubs
 {
     public class GamePipelineModule : HubPipelineModule
     {
-        protected override void OnIncomingError(Exception ex, IHubIncomingInvokerContext context)
+        protected override void OnIncomingError(ExceptionContext exceptionContext, IHubIncomingInvokerContext invokerContext)
         {
-            System.Diagnostics.Trace.TraceError(ex.Message);
-            System.Diagnostics.Trace.TraceError(ex.StackTrace);
+            System.Diagnostics.Trace.TraceError(exceptionContext.Error.Message);
+            System.Diagnostics.Trace.TraceError(exceptionContext.Error.StackTrace);
 
-            context.Hub.Clients.Caller.Error();
-
-            base.OnIncomingError(ex, context);
+            invokerContext.Hub.Clients.Caller.Error();
+        
+ 	    base.OnIncomingError(exceptionContext, invokerContext);
         }
     }
 

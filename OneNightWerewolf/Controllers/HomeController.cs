@@ -28,9 +28,30 @@ namespace OneNightWerewolf.Controllers
             return View();
         }
 
+        public ActionResult Howto()
+        {
+            ViewBag.Message = "";
+
+            return View();
+        }
+
+        public ActionResult Version()
+        {
+            ViewBag.Message = "";
+
+            return View();
+        }
+
+        public ActionResult Rules()
+        {
+            ViewBag.Message = "";
+
+            return View();
+        }
+
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "";
 
             return View();
         }

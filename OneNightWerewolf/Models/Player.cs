@@ -125,7 +125,7 @@ namespace OneNightWerewolf.Models
                 return false;
             }
 
-            if (this.OriginalCard is VillagerCard || this.OriginalCard is LoonyCard)
+            if (this.OriginalCard is VillagerCard || this.OriginalCard is LoonyCard || this.OriginalCard is WerewolfCard)
             {
                 return false;
             }
@@ -164,7 +164,7 @@ namespace OneNightWerewolf.Models
                 PlayerId = this.Player.PlayerId,
                 PlayerName = this.Player.PlayerName,
                 PlayerUserName = this.Player.PlayerUserName,
-                IconUri = this.Player.IconUri
+                IconUri = "nothing"
             };
         }
 
@@ -180,7 +180,7 @@ namespace OneNightWerewolf.Models
         {
             var targets = this.Game.Players.Where(p => p.Player.PlayerId != this.Player.PlayerId);
 
-            return new SelectList(targets, "Player.PlayerId", "Player.PlayerName");
+            return new SelectList(targets, "Player.PlayerId", "Player.PlayerUserName");
         }
 
         public List<SelectListItem> CreateSkillTarget()
@@ -188,7 +188,7 @@ namespace OneNightWerewolf.Models
             var targets = this.Game.Players.Where(p => p.Player.PlayerId != this.Player.PlayerId)
                                            .Select(p => new SelectListItem()
                                            {
-                                               Text = p.Player.PlayerName,
+                                               Text = p.Player.PlayerUserName,
                                                Value = p.Player.PlayerId.ToString()
                                            }).ToList();
 

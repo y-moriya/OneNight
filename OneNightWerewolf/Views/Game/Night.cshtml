@@ -1,63 +1,65 @@
 ﻿@model OneNightWerewolf.Models.GameModel
 
 @{
-    ViewBag.Title = string.Format("第{0}夜", Model.Game.GameId);
+    ViewBag.Title = string.Format("第{0}夜 {1}", Model.Game.GameId, Model.Game.GameName);
 }
 
-<hgroup class="title">
-    <h1>@string.Format("第{0}夜", Model.Game.GameId)</h1>
-    <h2>@Model.Game.GameName</h2>
-</hgroup>
+<h1>@string.Format("第{0}夜", Model.Game.GameId) <small>@Model.Game.GameName</small></h1>
 
-<aside>
-    @Html.Partial("Information", Model)
-</aside>
-
-<article>
-    @if (Request.IsAuthenticated && Model.Game.Phase != OneNightWerewolf.Models.Phase.Close)
-    {
-        if (Model.Players.Any(p => p.Player.PlayerUserName == User.Identity.Name))
+<div class="row">
+    <div class="col-md-3">
+        @Html.Partial("Information", Model)
+    </div>
+    <div class="col-md-9">
+        @if (Request.IsAuthenticated && Model.Game.Phase != OneNightWerewolf.Models.Phase.Close)
         {
-            <p>
-                @Html.Partial("PlayersForm", Model.Players.Find(p => p.Player.PlayerUserName == User.Identity.Name))
-            </p>
+            if (Model.Players.Any(p => p.Player.PlayerUserName == User.Identity.Name))
+            {
+                <p>
+                    @Html.Partial("PlayersForm", Model.Players.Find(p => p.Player.PlayerUserName == User.Identity.Name))
+                </p>
+            }
+            else if (Model.CanEntry())
+            {
+                using (Html.BeginForm("Entry", "Game"))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("gameId", Model.Game.GameId)
+
+                    <input type="submit" class="btn btn-success" id="entry" value="このゲームに参加する" />
+                    <hr />
+                }
+            }
         }
         else if (Model.CanEntry())
         {
-            using (Html.BeginForm("Entry", "Game"))
+            <p class="text-info">
+                ゲームに参加する場合はログインしてください。
+            </p>
+        }
+
+        @Html.Action("Messages")
+
+        @if (Request.IsAuthenticated && User.Identity.Name == "ruka_pokelove")
+        {
+            <h2>更新</h2>
+
+            using (Html.BeginForm("TestUpdate", "Game"))
             {
                 @Html.AntiForgeryToken()
                 @Html.Hidden("gameId", Model.Game.GameId)
-
-                <input type="submit" id="entry" value="参加" />
+                <input type="submit" value="Update" />
             }
         }
-    }
-    else if (Model.CanEntry())
-    {
-        <p>
-            参加するならログインしてね。
-        </p>
-    }
 
-    @Html.Action("Messages")
+    </div>
+</div>
 
-    @if (Request.IsAuthenticated && User.Identity.Name == "ruka_pokelove")
-    {
-        <h2>更新</h2>
+<hr />
 
-        using (Html.BeginForm("TestUpdate", "Game"))
-        {
-            @Html.AntiForgeryToken()
-            @Html.Hidden("gameId", Model.Game.GameId)
-            <input type="submit" value="Update" />
-        }
-    }
-
-    <p>
-        @Html.ActionLink("戻る", "Index", "Home")
-    </p>
-</article>
+<p>
+    @Html.ActionLink("戻る", "Index", "Home")
+</p>
 
 @section Scripts {
     @Scripts.Render("~/Scripts/OneNight.js")

@@ -1,21 +1,17 @@
 ﻿@model IEnumerable<OneNightWerewolf.Models.Message>
 
 <div id="msg">
-    @foreach (var item in Model) {
-    <div class="content">
-        <div class="header">
-            <img class="icon" src="@Url.Content(item.IconUri)" />
-            <strong class="name">@Html.DisplayFor(modelItem => item.PlayerName)</strong>
-            @if (item.PlayerUserName != null)
-            {
-                <span class="username">@@@Html.DisplayFor(modelItem => item.PlayerUserName)</span>
-            }
-            <span class="time">@Html.DisplayFor(modelItem => item.CreatedAt)</span>
+    @foreach (var item in Model)
+    {
+        <div class="row @item.GetMessageTypeForClass()">
+            <div class="col-sm-9">
+                <strong>@Html.DisplayFor(modelItem => item.PlayerUserName)</strong> > @Html.DisplayFor(modelItem => item.Content)
+            </div>
+            <div class="col-sm-3">
+                <span class="text-info">@Html.DisplayFor(modelItem => item.CreatedAt)</span>
+            </div>
+
         </div>
-        <p class="@item.GetMessageTypeForClass()">
-            @Html.DisplayFor(modelItem => item.Content)
-        </p>
-    </div>
     }
 </div>
 

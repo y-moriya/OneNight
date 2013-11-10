@@ -4,28 +4,22 @@
     ViewBag.Title = "ゲーム作成";
 }
 
-<h2>ゲーム作成</h2>
+<h1>@ViewBag.Title</h1>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("Create", "Game", FormMethod.Post, new { @role = "form" }))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    <fieldset>
-        <legend>Game</legend>
+    <div class="form-group">
+        @Html.LabelFor(model => model.GameName, "メッセージ")
+        @Html.TextBoxFor(model => model.GameName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.GameName)
+    </div>
 
-        <div class="editor-label">
-            メッセージ
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.GameName)
-            @Html.ValidationMessageFor(model => model.GameName)
-        </div>
-
-        @Html.Hidden("Creator", User.Identity.Name)
-        <p>
-            <input type="submit" value="作成" />
-        </p>
-    </fieldset>
+    @Html.Hidden("Creator", User.Identity.Name)
+    <p class="text-danger">作成後1時間以内に開始されなかった場合、ゲームは削除されます。</p>
+    <input type="submit" class="btn btn-default" value="作成" />
 }
 <div>
     @Html.ActionLink("戻る", "Index", "Home")

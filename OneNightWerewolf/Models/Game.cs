@@ -147,18 +147,16 @@ namespace OneNightWerewolf.Models
             this.Initialize();
         }
 
-        //public GameModel(Game game)
-        //{
-        //    this.Game = game;
-        //    this.Initialize();
-        //}
-
         private void Initialize()
         {
             this.SecretCards = CardFactory.CreateCardsFromString(this.Game.SecretCards);
             this.cardset = CardFactory.CreateCardsFromString(this.Game.Cards);
             this.Players = GetPlayers();
             this.Messages = this.db.Messages.Where(m => m.GameId == this.Game.GameId).ToList();
+            if (this.Messages.Count == 0)
+            {
+                this.SystemMessage("ゲームが作成されました。１時間以内に開始されなかった場合、自動的に削除されます。");
+            }
         }
 
         public GameModel(string name)
@@ -259,7 +257,7 @@ namespace OneNightWerewolf.Models
             this.db.Entries.Add(entry);
             this.db.SaveChanges();
 
-            this.SystemMessage(string.Format("{0} @{1} が参加しました。", p.Player.PlayerName, p.Player.PlayerUserName));
+            this.SystemMessage(string.Format("{0} が参加しました。", p.Player.PlayerUserName));
 
             return true;
         }
@@ -284,13 +282,13 @@ namespace OneNightWerewolf.Models
 
             this.db.SaveChanges();
 
-            this.SystemMessage(string.Format("{0} @{1} が退出しました。", target.Player.PlayerName, target.Player.PlayerUserName));
+            this.SystemMessage(string.Format("{0} が退出しました。", target.Player.PlayerUserName));
         }
 
         public string GetPlayersInformation()
         {
             return string.Format("参加者 {0} 名：{1}", this.PlayerNum,
-                string.Join("、", this.Players.Select(p => p.Player.PlayerName)));
+                string.Join("、", this.Players.Select(p => p.Player.PlayerUserName)));
         }
 
         private void StartGame()
@@ -310,7 +308,7 @@ namespace OneNightWerewolf.Models
                 if (i < this.Players.Count())
                 {
                     this.Players[i].SetOriginalCard(this.cardset[i]);
-                    this.TraceLog(string.Format("{0} に {1} を割り当てました。", this.Players[i].Player.PlayerName,
+                    this.TraceLog(string.Format("{0} に {1} を割り当てました。", this.Players[i].Player.PlayerUserName,
                                                                                     this.cardset[i].CardName));
                 }
                 else
@@ -354,16 +352,16 @@ namespace OneNightWerewolf.Models
                     player.Player.SkillTarget = target.Player.PlayerId;
                     player.Player.AddSkillResult(target.OriginalCard.CardId);
 
-                    this.SecretMessage(player, string.Format("あなたの仲間は {0} です。", target.Player.PlayerName));
+                    this.SecretMessage(player, string.Format("あなたの仲間は {0} です。", target.Player.PlayerUserName));
 
-                    this.TraceLog(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerName, target.Player.PlayerName));
+                    this.TraceLog(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
                 }
                 else
                 {
                     player.Player.SkillTarget = -1;
                     player.Player.AddSkillResult(-1);
                     this.SecretMessage(player, "あなたの仲間はいませんでした。");
-                    this.TraceLog(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerUserName));
                 }
             }
             else if (player.OriginalCard is SeerCard)
@@ -380,7 +378,7 @@ namespace OneNightWerewolf.Models
                         //break;
                     }
 
-                    this.TraceLog(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerUserName));
                 }
                 else
                 {
@@ -388,8 +386,8 @@ namespace OneNightWerewolf.Models
                     player.Player.SkillTarget = target.Player.PlayerId;
                     player.Player.AddSkillResult(target.OriginalCard.CardId);
 
-                    this.SecretMessage(player, string.Format("{0} は {1} でした。", target.Player.PlayerName, target.OriginalCard.CardName));
-                    this.TraceLog(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerName, target.Player.PlayerName, target.OriginalCard.CardName));
+                    this.SecretMessage(player, string.Format("{0} は {1} でした。", target.Player.PlayerUserName, target.OriginalCard.CardName));
+                    this.TraceLog(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerUserName, target.Player.PlayerUserName, target.OriginalCard.CardName));
                 }
             }
             else if (player.OriginalCard is ThiefCard)
@@ -402,7 +400,7 @@ namespace OneNightWerewolf.Models
                     player.SetCurrentCard(player.OriginalCard);
 
                     this.SecretMessage(player, "あなたはカードを交換しませんでした。");
-                    this.TraceLog(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerName));
+                    this.TraceLog(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerUserName));
                 }
                 else
                 {
@@ -412,10 +410,10 @@ namespace OneNightWerewolf.Models
                     player.SetCurrentCard(target.OriginalCard);
                     target.SetCurrentCard(player.OriginalCard);
 
-                    this.SecretMessage(player, string.Format("あなたは {0} とカードを交換し、 {1} になりました。", target.Player.PlayerName, target.OriginalCard.CardName));
-                    this.TraceLog(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerName, target.Player.PlayerName));
-                    this.TraceLog(string.Format("{0} のカードは {1} です。", player.Player.PlayerName, player.CurrentCard.CardName));
-                    this.TraceLog(string.Format("{0} のカードは {1} です。", target.Player.PlayerName, target.CurrentCard.CardName));
+                    this.SecretMessage(player, string.Format("あなたは {0} とカードを交換し、 {1} になりました。", target.Player.PlayerUserName, target.OriginalCard.CardName));
+                    this.TraceLog(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
+                    this.TraceLog(string.Format("{0} のカードは {1} です。", player.Player.PlayerUserName, player.CurrentCard.CardName));
+                    this.TraceLog(string.Format("{0} のカードは {1} です。", target.Player.PlayerUserName, target.CurrentCard.CardName));
 
                 }
 
@@ -475,8 +473,8 @@ namespace OneNightWerewolf.Models
             var target = this.Players.Find(p => p.Player.PlayerId == targetId);
             player.Vote(target.Player.PlayerId);
 
-            this.SecretMessage(player, string.Format("あなたは {0} に投票しました。", target.Player.PlayerName));
-            this.TraceLog(string.Format("{0} が {1} に投票しました。", player.Player.PlayerName, target.Player.PlayerName));
+            this.SecretMessage(player, string.Format("あなたは {0} に投票しました。", target.Player.PlayerUserName));
+            this.TraceLog(string.Format("{0} が {1} に投票しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
 
             this.db.SaveChanges();
         }
@@ -485,8 +483,8 @@ namespace OneNightWerewolf.Models
         {
             var t = GetRandomPlayerWithoutSelf(player.Player.PlayerId);
             player.Vote(t.Player.PlayerId);
-            this.SecretMessage(player, string.Format("あなたは {0} にランダム投票しました。", t.Player.PlayerName));
-            this.TraceLog(string.Format("{0} が {1} にランダム投票しました。", player.Player.PlayerName, t.Player.PlayerName));
+            this.SecretMessage(player, string.Format("あなたは {0} にランダム投票しました。", t.Player.PlayerUserName));
+            this.TraceLog(string.Format("{0} が {1} にランダム投票しました。", player.Player.PlayerUserName, t.Player.PlayerUserName));
         }
 
         #endregion
@@ -506,7 +504,7 @@ namespace OneNightWerewolf.Models
             var executed = this.JudgeExecution();
             foreach (PlayerModel ex in executed)
             {
-                this.SystemMessage(string.Format("投票の結果、{0} ({1}) が処刑されました。", ex.Player.PlayerName, ex.CurrentCard.CardName));
+                this.SystemMessage(string.Format("投票の結果、{0} ({1}) が処刑されました。", ex.Player.PlayerUserName, ex.CurrentCard.CardName));
             }
 
 
@@ -587,6 +585,7 @@ namespace OneNightWerewolf.Models
                 GameId = this.Game.GameId,
                 MessageType = MessageType.System,
                 PlayerName = "System",
+                PlayerUserName = "System",
                 IconUri = "~/Images/sysicon.png"
             };
 

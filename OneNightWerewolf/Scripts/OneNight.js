@@ -37,6 +37,7 @@ $(function () {
     var max = $("#hMaxMessageId").val();
     var MAX_INT = Math.pow(2, 53);
 
+    // TODO: 以前上手く行かなかったけど、将来的に再実装したい。
     //game.on("Recieve", function (type, name, msg, date) {
     //    $("#messages").find('tbody > tr:first').before('<tr class="' + type + '"><td class="name">' + name +
     //                                        ' > </td><td class="content">' + msg +
@@ -50,23 +51,13 @@ $(function () {
     game.on("WriteMsg", function (str, currentMax) {
         var json = JSON.parse(str);
         for (var i in json) {
-            var content = '<div class="content"><div class="header"><img class="icon" src="';
-            content += json[i].IconUri.replace('~', 'http://' + location.host);
-            content += '"><strong class="name">';
-            content += json[i].Name;
-            content += '</strong>';
-            if (json[i].UserName) {
-                content += '<span class="username"> @';
-                content += json[i].UserName;
-                content += '</span>';
-            }
-            content += '<span class="time">';
-            content += json[i].Date;
-            content += '</span></div><p class="';
-            content += json[i].Type;
-            content += '">';
+            var content = '<div class="row ' + json[i].Type + '"><div class="col-sm-9"><strong>';
+            content += json[i].UserName;
+            content += '</strong> > ';
             content += json[i].Content;
-            content += '</p></div>';
+            content += '</div><div class="col-sm-3"><span class="text-info">';
+            content += json[i].Date;
+            content += '</span></div>';
 
             $("#msg").find('div:first').before(content);
         }

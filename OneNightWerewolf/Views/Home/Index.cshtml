@@ -1,33 +1,67 @@
 ﻿@{
-    ViewBag.Title = "One Night Werewolf";
-}
-@section featured {
-    <section class="featured">
-        <div class="content-wrapper">
-            <hgroup class="title">
-                <h1>@ViewBag.Title</h1>
-                <h2>@ViewBag.Message</h2>
-            </hgroup>
-            <p>
-                ワンナイト人狼のチャット版をつくったよ。見た目は適当だけど、中身はそこそこまともなはず。<br />
-                そのうち見た目もまともにします。 by @@euro_s
-            </p>
-        </div>
-    </section>
+    ViewBag.Title = "One Night Werewolf Chat";
 }
 
-<h3>ルール</h3>
-<p>
-    @Html.ActionLink("遊び方", "About")
-</p>
-<p>
-    <a href="http://commons.nicovideo.jp/material/nc63613">ワンナイト人狼 - ルールブック</a>（外部サイト）
-</p>
+<div class="text-right">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_ws" data-lang="ja" data-hashtags="OneNightWerewolf">ツイート</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
+    <a href="http://b.hatena.ne.jp/entry/http://onenight.gunjobiyori.com/" class="hatena-bookmark-button" data-hatena-bookmark-title="ワンナイト人狼チャット" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+</div>
 
-<h3>ゲーム一覧</h3>
+<div class="hero-unit">
+    <h1>@ViewBag.Title</h1>
+    <p class="lead">
+        <a href="http://1nite-jinro.com/">ワンナイト人狼</a> をブラウザ上で、チャット形式で遊べる Web アプリです。 <br />
+        ワンナイト人狼のルールを元に Web 上にてほぼ再現しています。<br />
+        by <a href="http://www.twitter.com/euro_ws">@@euro_ws</a>
+    </p>
+
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <h3>ワンナイト人狼とは？</h3>
+        <p>
+            ワンナイト人狼とは akidelic さんが作成された、カードゲーム「人狼」が手軽に遊びやすくなったゲームです。10分前後で1ゲーム遊べます。<br />
+            詳しくは <a href="http://1nite-jinro.com/">1nite-jinro.com</a> や <a href="http://commons.nicovideo.jp/material/nc63613">【ワンナイト人狼】ルールブック</a> などを参照するとよいでしょう。
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h3>ルール <small>役職や勝敗決定について</small></h3>
+        <p>
+            公式ルールである <a href="http://commons.nicovideo.jp/material/nc63613">【ワンナイト人狼】ルールブック</a> とは違って、2枚の人狼のうち、1枚が狂人という役職に置き換わっています。<br />
+            狂人は人狼側ですが、自分が処刑されても人狼が生存していれば人狼の勝利となります。<br />
+            他の役職の解説も含め、詳しくは @Html.ActionLink("ルール", "Rules", "Home") をご参照ください。
+        </p>
+    </div>
+    <div class="col-md-4">
+        <h3>遊び方 <small>ゲームへの参加について</small></h3>
+        <p>
+            右上の「登録」から新たにユーザーを登録、または登録済みのユーザーでログインし、ゲーム一覧から募集中のゲームを選択して参加してください。<br />
+            自分でゲームを作成し、参加者を募集することも出来ます。GMは不要のため、ゲーム作成者もゲームに参加出来ます。<br />
+            ゲームの進行については詳しくは @Html.ActionLink("遊び方", "Howto", "Home") をご参照ください。
+        </p>
+    </div>
+</div>
+<hr />
+<h2>ゲーム新規作成</h2>
+@if (Request.IsAuthenticated)
+{
+    <button class="btn btn-default">
+        @Html.ActionLink("新規作成", "Create", "Game")
+    </button>
+}
+else
+{
+    <p>
+        ゲームを新規作成するにはログインしてください。
+    </p>
+}
+<h2>ゲーム一覧</h2>
 @Html.Action("PartialIndex", "Game")
 
-@if (Request.IsAuthenticated && User.Identity.Name == "roka_pokelove")
+@*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
 {
     <h5>全自動</h5>
     using (Html.BeginForm("Auto", "Game"))
@@ -36,4 +70,4 @@
         @Html.DropDownList("PlayerNum")
         <input type="submit" value="AutoCreation" />
     }
-}
+}*@

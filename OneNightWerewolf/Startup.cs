@@ -6,7 +6,7 @@ namespace OneNightWerewolf
     {
         public void Configuration(IAppBuilder app)
         {
-            app.MapHubs();
+            app.MapSignalR();
         }
     }
 }

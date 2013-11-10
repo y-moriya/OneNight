@@ -1,16 +1,12 @@
 ﻿@model IEnumerable<OneNightWerewolf.Models.Game>
 
-@if (Request.IsAuthenticated)
-{
-    <p>
-        @Html.ActionLink("新規作成", "Create")
-    </p>
-}
-<table>
+<table class="table table-striped">
     <tr>
         <th>
+            #
         </th>
         <th>
+            募集メッセージ
         </th>
         <th>
             @Html.DisplayNameFor(model => model.PlayerNum)
@@ -24,6 +20,10 @@
     </tr>
 
 @foreach (var item in Model) {
+    if (item.DeletedAt != null)
+    {
+        continue;
+    }
     <tr>
         <td>
             @Html.ActionLink(string.Format("第{0}夜", item.GameId), "Night", new { id = item.GameId })

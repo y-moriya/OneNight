@@ -1,26 +1,20 @@
 ﻿@if (Request.IsAuthenticated)
 {
-    <div>
-    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-    {
-        @Html.AntiForgeryToken()
-
-        <a href="javascript:document.getElementById('logoutForm').submit()">ログアウト</a>
-    }
-    </div>
-    <div>@@@User.Identity.Name</div>
-    @*こんにちは、@@@Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "管理" })!*@
-       
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "管理" })</li>
+        <li>
+            <a href="javascript:document.getElementById('logoutForm').submit()">ログオフ</a>
+            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+            }
+        </li>
+    </ul>
 }
 else
 {
-    <div>
-            @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "twitterLogin" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.Hidden("provider", OAuthWebSecurity.RegisteredClientData.First().AuthenticationClient.ProviderName)
-                <a href="javascript:document.getElementById('twitterLogin').submit()">ログイン</a>
-                
-            }
-    </div>
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("登録", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("ログイン", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
 }

@@ -1,10 +1,9 @@
 ﻿@model OneNightWerewolf.Models.GameModel
 
-
 <fieldset>
     <legend>情報</legend>
     <p>
-        作成者：@@@Model.Game.Creator
+        作成者：@Model.Game.Creator
     </p>
     <p>
         現在の状態：@Model.Game.PhaseToString()
@@ -13,48 +12,63 @@
         接続状況：<span id="connection">接続中</span>
     </p>
     <p id="players">
-        参加者 @Model.PlayerNum 名：@string.Join("、", Model.Players.Select(p => p.Player.PlayerName))
+        参加者 @Model.PlayerNum 名：@string.Join("、", Model.Players.Select(p => p.Player.PlayerUserName))
     </p>
     @if (Model.Game.NextUpdate.HasValue && Model.GetLeftTime().Seconds > 0)
     {
         <p>
-            残り <span id="lefttime">@Model.GetLeftTime().ToString(@"%m'分 '%s'秒'")</span> です。
+            残り <strong class="alert-danger"><span id="lefttime">@Model.GetLeftTime().ToString(@"%m'分 '%s'秒'")</span></strong> です。
         </p>
     }
     @if (Model.Game.Phase > OneNightWerewolf.Models.Phase.Voting)
     {
-        <table>
-        @foreach (var item in Model.Players) 
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Player.PlayerName)
-                </td>
-                <td>
-                    @item.GetCardNameForPlayer()
-                </td>
-                <td>
-                    @if (item.Player.Executed)
-                    {
-                        <span>処刑</span>
-                    }
-                    else
-                    {
-                        <span>生存</span>
-                    }
-                </td>
-                <td>
-                    @if (item.Player.Won)
-                    {
-                        <span>勝利</span>
-                    }
-                    else
-                    {
-                        <span>敗北</span>
-                    }
-                </td>
-            </tr>
-        }
+        <table class="table table-striped">
+                <tr>
+                    <th>
+                        プレイヤー
+                    </th>
+                    <th>
+                        役職
+                    </th>
+                    <th>
+                        生死
+                    </th>
+                    <th>
+                        勝敗
+                    </th>
+                </tr>
+                @foreach (var item in Model.Players)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.PlayerUserName)
+                        </td>
+                        <td>
+                            @item.GetCardNameForPlayer()
+                        </td>
+                        <td>
+                            @if (item.Player.Executed)
+                            {
+                                <span>処刑</span>
+                            }
+                            else
+                            {
+                                <span>生存</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Player.Won)
+                            {
+                                <span>勝利</span>
+                            }
+                            else
+                            {
+                                <span>敗北</span>
+                            }
+                        </td>
+                    </tr>
+                }
         </table>
         <p>
             伏せカード：@string.Join("、", Model.SecretCards.Select(c => c.CardName))
@@ -62,15 +76,18 @@
     }
 </fieldset>
 
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_ws" data-lang="ja" data-count="none" data-hashtags="OneNightWerewolf">ツイート</a>
+<script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
 @if (Request.IsAuthenticated && Model.Game.Phase == OneNightWerewolf.Models.Phase.Prologue)
 {
-    if (Model.Game.Creator == User.Identity.Name)
+    if (Model.Game.Creator == User.Identity.Name || User.Identity.Name == "admin")
     {
         using (Html.BeginForm("Start", "Game"))
         {
             @Html.AntiForgeryToken()
             @Html.Hidden("gameId", Model.Game.GameId)
-            <input type="button" id="start" value="ゲームを開始する" disabled="disabled" />
+            <input type="button" class="btn btn-success" onclick="return confirm('本当に開始しますか？')" id="start" value="ゲームを開始する" disabled="disabled" />
         }
     }
+    <hr />
 }

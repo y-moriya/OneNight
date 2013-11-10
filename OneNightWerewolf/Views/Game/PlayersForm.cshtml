@@ -1,7 +1,7 @@
 ﻿@model OneNightWerewolf.Models.PlayerModel
 
 <fieldset>
-    <legend>@Model.Player.PlayerName @Model.GetCardNameForPlayer()</legend>
+    <legend>@Model.Player.PlayerUserName @Model.GetCardNameForPlayer()</legend>
 
     @if (Model.CanSendMessage())
     {
@@ -15,8 +15,8 @@
             @Html.Hidden("gameId", Model.Game.Game.GameId)
             @Html.Hidden("playerId", Model.Player.PlayerId)
             @Html.DropDownList("targetId", Model.CreateVoteTarget())
-            
-            <input type="submit" value="投票" />
+
+            <input type="submit" class="btn btn-default" value="投票" />
         }
     }
 
@@ -30,17 +30,17 @@
 
             if (Model.OriginalCard is OneNightWerewolf.Models.WerewolfCard)
             {
-                <input type="submit" value="仲間を確認" />
+                <input type="submit" class="btn btn-default" value="仲間を確認" />
             }
             else if (Model.OriginalCard is OneNightWerewolf.Models.SeerCard)
             {
                 @Html.DropDownList("targetId", Model.CreateSkillTarget())
-                <input type="submit" value="占う" />
+                <input type="submit" class="btn btn-default" value="占う" />
             }
             else if (Model.OriginalCard is OneNightWerewolf.Models.ThiefCard)
             {
                 @Html.DropDownList("targetId", Model.CreateSkillTarget())
-                <input type="submit" value="カード交換" />
+                <input type="submit" class="btn btn-default" value="カード交換" />
             }
         }
     }
@@ -51,14 +51,14 @@
         {
             @Html.AntiForgeryToken()
             @Html.Hidden("playerId", Model.Player.PlayerId)
-            
+
             if (Model.Player.Commited)
             {
-                <input type="button" id="commit" value="時間を進めない" disabled="disabled" />
+                <input type="button" class="btn btn-default" id="commit" value="時間を進めない" disabled="disabled" />
             }
             else
             {
-                <input type="button" id="commit" value="時間を進める" disabled="disabled" />
+                <input type="button" class="btn btn-default" id="commit" value="時間を進める" disabled="disabled" />
             }
         }
     }
@@ -72,7 +72,7 @@
         @Html.Hidden("gameId", Model.Game.Game.GameId)
         @Html.Hidden("playerId", Model.Player.PlayerId)
 
-        <input type="button" id="exit" value="退出" />
+        <input type="button" class="btn btn-danger" id="exit" value="退出" />
     }
 }
 

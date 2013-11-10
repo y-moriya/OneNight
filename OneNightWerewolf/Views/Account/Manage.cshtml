@@ -4,12 +4,12 @@
 }
 
 <hgroup class="title">
-    <h1>@ViewBag.Title.</h1>
+    <h1>@ViewBag.Title</h1>
 </hgroup>
 
 <p class="message-success">@ViewBag.StatusMessage</p>
 
-<p> としてログインしています。<strong>@User.Identity.Name</strong>.</p>
+<p> <strong>@User.Identity.Name</strong> としてログインしています。</p>
 
 @if (ViewBag.HasLocalPassword)
 {
@@ -19,13 +19,6 @@ else
 { 
     @Html.Partial("_SetPasswordPartial")
 }
-
-<section id="externalLogins">
-    @Html.Action("RemoveExternalLogins")
-
-    <h3>外部ログインの追加</h3>
-    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
-</section>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
