@@ -11,7 +11,13 @@
         @Html.Partial("Information", Model)
     </div>
     <div class="col-md-9">
-        @if (Request.IsAuthenticated && Model.Game.Phase != OneNightWerewolf.Models.Phase.Close)
+        @if (Request.IsAuthenticated && User.Identity.Name == "admin")
+        {
+            <p>
+                @Html.Partial("AdminForm")
+            </p>
+        }
+        else if (Request.IsAuthenticated && Model.Game.Phase != OneNightWerewolf.Models.Phase.Close)
         {
             if (Model.Players.Any(p => p.Player.PlayerUserName == User.Identity.Name))
             {
@@ -40,7 +46,7 @@
 
         @Html.Action("Messages")
 
-        @if (Request.IsAuthenticated && User.Identity.Name == "ruka_pokelove")
+        @*@if (Request.IsAuthenticated && User.Identity.Name == "admin")
         {
             <h2>更新</h2>
 
@@ -50,7 +56,7 @@
                 @Html.Hidden("gameId", Model.Game.GameId)
                 <input type="submit" value="Update" />
             }
-        }
+        }*@
 
     </div>
 </div>

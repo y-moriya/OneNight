@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using OneNightWerewolf.Models;
 using OneNightWerewolf.Filters;
+using Microsoft.AspNet.SignalR;
+using OneNightWerewolf.Hubs;
 
 namespace OneNightWerewolf.Controllers
 {
@@ -181,6 +183,14 @@ namespace OneNightWerewolf.Controllers
                 return RedirectToAction("Night", new { id = gameId });
             }
             game.UpdatePhase();
+            var context = GlobalHost.ConnectionManager.GetHubContext<GameHub>();
+
+            if (game.Game.Phase > Phase.Prologue)
+            {
+                string msg = "ゲームが開始されました。画面を更新します。";
+                context.Clients.Group(gameId.ToString()).Reload(msg);
+            }
+
             return RedirectToAction("Night", new { id = gameId });
         }
 

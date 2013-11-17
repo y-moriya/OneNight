@@ -237,6 +237,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\GameHub.cs" />
+    <Compile Include="Hubs\HomeHub.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Migrations\201308051401550_InitialCreate.cs" />
     <Compile Include="Migrations\201308051401550_InitialCreate.Designer.cs">
@@ -442,6 +443,7 @@
     <Content Include="Views\Home\Howto.cshtml" />
     <Content Include="Views\Home\Version.cshtml" />
     <Content Include="Views\Home\Rules.cshtml" />
+    <Content Include="Views\Game\AdminForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

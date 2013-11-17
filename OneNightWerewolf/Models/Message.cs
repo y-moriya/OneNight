@@ -54,6 +54,8 @@ namespace OneNightWerewolf.Models
                     return "player";
                 case MessageType.Secret:
                     return "secret";
+                case MessageType.Admin:
+                    return "admin";
                 default:
                     return "default";
             }
@@ -71,6 +73,8 @@ namespace OneNightWerewolf.Models
                     return true;
                 case MessageType.Secret:
                     return (!(phase < Phase.Epilogue && (this.PlayerId != playerId)));
+                case MessageType.Admin:
+                    return true;
                 default:
                     return false;
             }
@@ -83,6 +87,7 @@ namespace OneNightWerewolf.Models
         System,
         Debug,
         Player,
-        Secret
+        Secret,
+        Admin
     }
 }

@@ -15,6 +15,6 @@ else
 {
     <ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink("登録", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("ログイン", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink("ログイン", "Login", "Account", routeValues: new { returnUrl = Request.Url.PathAndQuery }, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }

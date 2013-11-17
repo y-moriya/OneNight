@@ -23,6 +23,7 @@ $(function () {
     if ($("#entry").length != 0) {
         window.name = "";
     }
+
     if ($("#hPlayerId").length == 0) {
         $("#connection").html("接続なし");
         return;
@@ -68,6 +69,7 @@ $(function () {
         if (message != "") {
             alert(message);
         }
+        connection.stop();
         document.location.reload();
     });
 
@@ -98,9 +100,9 @@ $(function () {
         game.invoke("GetMessages", gameId, playerId, max);
     });
 
-    $("#start").click(function () {
-        game.invoke("Start", gameId);
-    });
+    //$("#start").click(function () {
+    //    game.invoke("Start", gameId);
+    //});
 
     $("#commit").click(function () {
         game.invoke("Commit", gameId, playerId);
@@ -136,12 +138,16 @@ $(function () {
 
     connection.start(function () {
         $("#send").prop("disabled", false);
-        $("#start").prop("disabled", false);
+        //$("#start").prop("disabled", false);
         $("#commit").prop("disabled", false);
         $("#connection").html("正常");
 
         game.invoke("Join", gameId, playerName, (window.name == window.location.href));
         window.name = window.location.href;
+    });
+
+    $(window).unload(function () {
+        connection.stop();
     });
 
     connection.error(function (error) {

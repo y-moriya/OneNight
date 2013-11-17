@@ -1,0 +1,15 @@
+﻿@model OneNightWerewolf.Models.GameModel
+
+<fieldset>
+    <legend>管理者用フォーム</legend>
+    @if (Model.Game.Phase < OneNightWerewolf.Models.Phase.Close)
+    {
+        @Html.Partial("PartialMessage", Model.CreateAdminMessage())
+    }
+    
+</fieldset>
+
+@Html.Hidden("hGameId", Model.Game.GameId)
+@Html.Hidden("hPlayerId", -1)
+@Html.Hidden("hPlayerName", "admin")
+@Html.Hidden("hPhase", Model.Game.Phase)

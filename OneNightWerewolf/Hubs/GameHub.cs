@@ -110,8 +110,16 @@ namespace OneNightWerewolf.Hubs
                 return;
             }
 
-            var player = game.Players.Find(p => p.Player.PlayerId == playerId);
-            var message = player.CreateMessage(content);
+            var message = new Message();
+            if (playerId == -1) // 管理者
+            {
+                message = game.CreateAdminMessage(content);
+            }
+            else
+            {
+                var player = game.Players.Find(p => p.Player.PlayerId == playerId);
+                message = player.CreateMessage(content);
+            }
 
             game.SendMessage(message);
 

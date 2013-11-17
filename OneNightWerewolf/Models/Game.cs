@@ -136,7 +136,7 @@ namespace OneNightWerewolf.Models
         public const int MINUTES_OF_NIGHT = 1;
         public const int MINUTES_OF_DAY = 8;
         public const int MINUTES_OF_VOTE = 1;
-        public const int MINUTES_OF_EP = 10;
+        public const int MINUTES_OF_EP = 30;
         public const int MINUTES_OF_DEL = 60;
         #endregion
 
@@ -329,6 +329,88 @@ namespace OneNightWerewolf.Models
         #endregion
 
         #region Night
+        public void UseWerewolfSkill(PlayerModel player,int playerId, int targetId)
+        {
+            if (this.cardset.Count(c => c is WerewolfCard) < 2)
+            {
+                // 人狼の総数が1枚なら確認は不要
+                return;
+            }
+
+            var target = this.Players.FirstOrDefault(p =>
+                p.OriginalCard is WerewolfCard && p.Player.PlayerId != playerId);
+            if (target != null)
+            {
+                player.Player.SkillTarget = target.Player.PlayerId;
+                player.Player.AddSkillResult(target.OriginalCard.CardId);
+
+                this.SecretMessage(player, string.Format("あなたの仲間は {0} です。", target.Player.PlayerUserName));
+
+                this.TraceLog(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
+            }
+            else
+            {
+                player.Player.SkillTarget = -1;
+                player.Player.AddSkillResult(-1);
+                this.SecretMessage(player, "あなたの仲間はいませんでした。");
+                this.TraceLog(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerUserName));
+            }
+        }
+
+        public void UseSeerSkill(PlayerModel player, int playerId, int targetId)
+        {
+            if (targetId < 1)
+            {
+                player.Player.SkillTarget = targetId;
+                foreach (Card secret in this.SecretCards)
+                {
+                    player.Player.AddSkillResult(secret.CardId);
+                    this.SecretMessage(player, string.Format("伏せカードは {0} でした。", secret.CardName));
+
+                    // 伏せカードのうち、1枚だけ占う
+                    //break;
+                }
+
+                this.TraceLog(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerUserName));
+            }
+            else
+            {
+                var target = this.Players.Find(p => p.Player.PlayerId == targetId);
+                player.Player.SkillTarget = target.Player.PlayerId;
+                player.Player.AddSkillResult(target.OriginalCard.CardId);
+
+                this.SecretMessage(player, string.Format("{0} は {1} でした。", target.Player.PlayerUserName, target.OriginalCard.CardName));
+                this.TraceLog(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerUserName, target.Player.PlayerUserName, target.OriginalCard.CardName));
+            }
+        }
+
+        public void UseThiefSkill(PlayerModel player, int playerId, int targetId)
+        {
+            // 怪盗は交換しないこともできる。
+            if (targetId < 1)
+            {
+                player.Player.SkillTarget = targetId;
+                player.Player.AddSkillResult(player.Player.OriginalCardId);
+                player.SetCurrentCard(player.OriginalCard);
+
+                this.SecretMessage(player, "あなたはカードを交換しませんでした。");
+                this.TraceLog(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerUserName));
+            }
+            else
+            {
+                var target = this.Players.Find(p => p.Player.PlayerId == targetId);
+                player.Player.SkillTarget = target.Player.PlayerId;
+                player.Player.AddSkillResult(target.OriginalCard.CardId);
+                player.SetCurrentCard(target.OriginalCard);
+                target.SetCurrentCard(player.OriginalCard);
+
+                this.SecretMessage(player, string.Format("あなたは {0} とカードを交換し、 {1} になりました。", target.Player.PlayerUserName, target.OriginalCard.CardName));
+                this.TraceLog(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
+                this.TraceLog(string.Format("{0} のカードは {1} です。", player.Player.PlayerUserName, player.CurrentCard.CardName));
+                this.TraceLog(string.Format("{0} のカードは {1} です。", target.Player.PlayerUserName, target.CurrentCard.CardName));
+            }
+        }
+
         public void UseSkill(int playerId, int targetId)
         {
             if (this.Game.Phase != Phase.Night)
@@ -345,78 +427,15 @@ namespace OneNightWerewolf.Models
 
             if (player.OriginalCard is WerewolfCard)
             {
-                var target = this.Players.FirstOrDefault(p =>
-                    p.OriginalCard is WerewolfCard && p.Player.PlayerId != playerId);
-                if (target != null)
-                {
-                    player.Player.SkillTarget = target.Player.PlayerId;
-                    player.Player.AddSkillResult(target.OriginalCard.CardId);
-
-                    this.SecretMessage(player, string.Format("あなたの仲間は {0} です。", target.Player.PlayerUserName));
-
-                    this.TraceLog(string.Format("人狼 {0} が {1} を仲間として認識しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
-                }
-                else
-                {
-                    player.Player.SkillTarget = -1;
-                    player.Player.AddSkillResult(-1);
-                    this.SecretMessage(player, "あなたの仲間はいませんでした。");
-                    this.TraceLog(string.Format("人狼 {0} には仲間がいませんでした。", player.Player.PlayerUserName));
-                }
+                UseWerewolfSkill(player, playerId, targetId);
             }
             else if (player.OriginalCard is SeerCard)
             {
-                if (targetId < 1)
-                {
-                    player.Player.SkillTarget = targetId;
-                    foreach (Card secret in this.SecretCards)
-                    {
-                        player.Player.AddSkillResult(secret.CardId);
-                        this.SecretMessage(player, string.Format("伏せカードは {0} でした。", secret.CardName));
-
-                        // 伏せカードのうち、1枚だけ占う
-                        //break;
-                    }
-
-                    this.TraceLog(string.Format("占い師 {0} が伏せカードを占いました。", player.Player.PlayerUserName));
-                }
-                else
-                {
-                    var target = this.Players.Find(p => p.Player.PlayerId == targetId);
-                    player.Player.SkillTarget = target.Player.PlayerId;
-                    player.Player.AddSkillResult(target.OriginalCard.CardId);
-
-                    this.SecretMessage(player, string.Format("{0} は {1} でした。", target.Player.PlayerUserName, target.OriginalCard.CardName));
-                    this.TraceLog(string.Format("占い師 {0} が {1} を占い、結果は {2} でした。", player.Player.PlayerUserName, target.Player.PlayerUserName, target.OriginalCard.CardName));
-                }
+                UseSeerSkill(player, playerId, targetId);
             }
             else if (player.OriginalCard is ThiefCard)
             {
-                // 怪盗は交換しないこともできる。
-                if (targetId < 1)
-                {
-                    player.Player.SkillTarget = targetId;
-                    player.Player.AddSkillResult(player.Player.OriginalCardId);
-                    player.SetCurrentCard(player.OriginalCard);
-
-                    this.SecretMessage(player, "あなたはカードを交換しませんでした。");
-                    this.TraceLog(string.Format("怪盗 {0} がカード交換しないことを選択しました。", player.Player.PlayerUserName));
-                }
-                else
-                {
-                    var target = this.Players.Find(p => p.Player.PlayerId == targetId);
-                    player.Player.SkillTarget = target.Player.PlayerId;
-                    player.Player.AddSkillResult(target.OriginalCard.CardId);
-                    player.SetCurrentCard(target.OriginalCard);
-                    target.SetCurrentCard(player.OriginalCard);
-
-                    this.SecretMessage(player, string.Format("あなたは {0} とカードを交換し、 {1} になりました。", target.Player.PlayerUserName, target.OriginalCard.CardName));
-                    this.TraceLog(string.Format("怪盗 {0} が {1} とカードを交換しました。", player.Player.PlayerUserName, target.Player.PlayerUserName));
-                    this.TraceLog(string.Format("{0} のカードは {1} です。", player.Player.PlayerUserName, player.CurrentCard.CardName));
-                    this.TraceLog(string.Format("{0} のカードは {1} です。", target.Player.PlayerUserName, target.CurrentCard.CardName));
-
-                }
-
+                UseThiefSkill(player, playerId, targetId);
             }
 
             this.db.SaveChanges();
@@ -577,6 +596,29 @@ namespace OneNightWerewolf.Models
         #endregion
 
         #region Message
+        public Message CreateAdminMessage()
+        {
+            var m = new Message()
+            {
+                GameId = this.Game.GameId,
+                MessageType = MessageType.Admin,
+                PlayerName = "admin",
+                PlayerUserName = "管理者",
+                PlayerId = -1,
+                IconUri = "~/Images/admicon.png"
+            };
+
+            return m;
+        }
+
+        public Message CreateAdminMessage(string content)
+        {
+            var m = CreateAdminMessage();
+            m.Content = content;
+
+            return m;
+        }
+
         public void SystemMessage(string str)
         {
             var m = new Message()
@@ -621,7 +663,7 @@ namespace OneNightWerewolf.Models
                 return;
             }
 
-            if (!this.Players.Any(p => p.Player.PlayerId == message.PlayerId))
+            if (message.MessageType == MessageType.Player && !this.Players.Any(p => p.Player.PlayerId == message.PlayerId))
             {
                 return;
             }

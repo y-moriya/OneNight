@@ -76,7 +76,7 @@
     }
 </fieldset>
 
-<a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_ws" data-lang="ja" data-count="none" data-hashtags="OneNightWerewolf">ツイート</a>
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_ws" data-lang="ja" data-count="none" data-hashtags="OneNightWerewolf,ワンナイト人狼">ツイート</a>
 <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
 @if (Request.IsAuthenticated && Model.Game.Phase == OneNightWerewolf.Models.Phase.Prologue)
 {
@@ -86,7 +86,7 @@
         {
             @Html.AntiForgeryToken()
             @Html.Hidden("gameId", Model.Game.GameId)
-            <input type="button" class="btn btn-success" onclick="return confirm('本当に開始しますか？')" id="start" value="ゲームを開始する" disabled="disabled" />
+            <input type="submit" class="btn btn-success" onclick="return confirm('本当に開始しますか？')" value="ゲームを開始する" />
         }
     }
     <hr />
