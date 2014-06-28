@@ -46,7 +46,11 @@ namespace OneNightWerewolf.Controllers
 
         public ActionResult PartialIndex()
         {
-            return PartialView(db.Games.OrderByDescending(g => g.GameId));
+            if (db.Games.Count(g => g.Phase < Phase.Close) == 0)
+            {
+                return PartialView(db.Games.OrderByDescending(g => g.GameId).Take(10));
+            }
+            return PartialView(db.Games.Where(g => g.Phase < Phase.Close).OrderByDescending(g => g.GameId));
         }
 
         public ActionResult PlayersList(int id)

@@ -1,20 +1,20 @@
 ﻿@{
-    ViewBag.Title = "One Night Werewolf Chat";
+    ViewBag.Title = "トップ";
 }
 
 <div class="text-right">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_ws" data-lang="ja" data-hashtags="OneNightWerewolf,ワンナイト人狼">ツイート</a>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_s" data-lang="ja" data-hashtags="OneNightWerewolf,ワンナイト人狼">ツイート</a>
     <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
     <a href="http://b.hatena.ne.jp/entry/http://onenight.gunjobiyori.com/" class="hatena-bookmark-button" data-hatena-bookmark-title="ワンナイト人狼チャット" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="ja" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
     <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
 </div>
 
 <div class="hero-unit">
-    <h1>@ViewBag.Title</h1>
+    <h1>ワンナイト人狼チャット</h1>
     <p class="lead">
         <a href="http://1nite-jinro.com/">ワンナイト人狼</a> をブラウザ上で、チャット形式で遊べる Web アプリです。 <br />
         ワンナイト人狼のルールを元に Web 上にてほぼ再現しています。<br />
-        by <a href="http://www.twitter.com/euro_ws">@@euro_ws</a>
+        by <a href="http://www.twitter.com/euro_s">@@euro_s</a>
     </p>
 
 </div>
@@ -62,20 +62,13 @@
         }
 
     </div>
-    <div class="col-md-6">
-
-        <h2>待合室（試験運用中）</h2>
-        <p>遊び仲間を探すのにご利用ください。</p>
-        <!--Kanichat ChatInfo 20131117 Start-->
-        <div id="KANI_PUBMEMLIST_onenight" style="font-size: 10px;text-align:center; padding: 2.5px; margin: 3px; background-color: #4B4B4B; border: 2px solid #333333; width: 160px; height: 80px;">
-            <div><a target="_blank" id="KANI_LINK_onenight" href="http://www.kanichat.com/" style="color: #DDDDDD;">チャット</a></div>
-            <script src="http://chat.kanichat.com/publicMemJs.jsp?roomid=onenight" defer="defer"></script>
-        </div>
-        <!--Kanichat ChatInfo End-->
-    </div>
 </div>
 <h2>ゲーム一覧</h2>
 @Html.Action("PartialIndex", "Game")
+
+<p>
+    2014/06/28 現在、過去の村の一覧を見ることはできません。しばらくお待ちください。
+</p>
 
 @*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
 {
