@@ -41,7 +41,13 @@ namespace OneNightWerewolf.Controllers
                 playerId = player.Player.PlayerId;
             }
 
-            return PartialView(game.GetMessages(playerId));
+            var messages = game.GetMessages(playerId);
+            if (game.Game.Phase == Phase.Close)
+            {
+                messages = messages.OrderBy(m => m.MessageId).ToList();
+            }
+
+            return PartialView(messages);
         }
 
         public ActionResult PartialIndex()

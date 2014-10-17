@@ -17,6 +17,8 @@ namespace MvcApplication1.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
+        private GamesContext db = new GamesContext();
+
         //
         // GET: /Account/Login
 
@@ -297,6 +299,18 @@ namespace MvcApplication1.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        public ActionResult Record(string id)
+        {
+            string name = User.Identity.Name;
+            if (!string.IsNullOrEmpty(id))
+            {
+                name = id;
+            }
+            var players = db.Players.Where(p => p.PlayerUserName == name);
+            Record record = new Record(name, players, players.SelectMany(p => db.Games.Where(g => g.GameId == p.GameId)));
+            return View(record);
         }
 
         [AllowAnonymous]

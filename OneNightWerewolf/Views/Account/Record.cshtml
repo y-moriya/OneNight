@@ -1,0 +1,81 @@
+﻿@model OneNightWerewolf.Models.Record
+
+@{
+    ViewBag.Title = "戦績";
+}
+
+<h2>@Model.UserName の戦績</h2>
+<h3>Summary</h3>
+<ul>
+    <li>合計：@Model.GetGames().Count(g => g.DeletedAt == null) 戦 </li>
+</ul>
+@*
+    合計: @Model.GetGames().Count() 戦
+    <ul>
+        <li>村人側：100戦 90勝 10敗</li>
+        <li>人狼側：100戦 10勝 90敗</li>
+    </ul>
+
+    <hr />
+
+    <h3>役職別</h3>
+
+    <ul>
+        <li>村人　：100戦 90勝 10敗</li>
+        <li>占い師：100戦 10勝 90敗</li>
+        <li>怪盗　：100戦 10勝 90敗</li>
+        <li>人狼　：100戦 10勝 90敗</li>
+        <li>狂人　：100戦 10勝 90敗</li>
+    </ul>
+
+    <hr />*@
+
+<h3>参加したゲーム一覧</h3>
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            #
+        </th>
+        <th>
+            募集メッセージ
+        </th>
+        <th>
+            人数
+        </th>
+        <th>
+            勝敗
+        </th>
+        <th>
+            遊んだ日
+        </th>
+    </tr>
+
+    @foreach (var item in Model.GetGames())
+    {
+        <tr>
+            <td>
+                @Html.ActionLink(string.Format("第{0}夜", item.GameId), "Night", "Game", new { id = item.GameId }, null)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerNum) 人
+            </td>
+            <td>
+                @if (item.DeletedAt != null)
+                {
+                    @Html.Raw("削除")
+                }
+                else
+                {
+                    @item.WonToString()
+                }
+            </td>
+            <td>
+                @item.CreatedAt.Value.Date.ToLongDateString()
+            </td>
+        </tr>
+    }
+</table>

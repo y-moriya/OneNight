@@ -42,7 +42,7 @@
 
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Player.PlayerUserName)
+                            @Html.ActionLink(item.Player.PlayerUserName, "Record", "Account", new { id = item.Player.PlayerUserName }, null)
                         </td>
                         <td>
                             @item.GetCardNameForPlayer()

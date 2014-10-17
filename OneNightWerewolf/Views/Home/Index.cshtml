@@ -2,6 +2,13 @@
     ViewBag.Title = "トップ";
 }
 
+<div class="hero-unit">
+    <h1>ワンナイト人狼チャット</h1>
+
+</div>
+
+<hr />
+
 <div class="text-right">
     <a href="https://twitter.com/share" class="twitter-share-button" data-via="euro_s" data-lang="ja" data-hashtags="OneNightWerewolf,ワンナイト人狼">ツイート</a>
     <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + '://platform.twitter.com/widgets.js'; fjs.parentNode.insertBefore(js, fjs); } }(document, 'script', 'twitter-wjs');</script>
@@ -9,16 +16,51 @@
     <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
 </div>
 
+<div class="row">
+    <div class="col-md-6">
+        <h2>ゲーム新規作成</h2>
+        @if (Request.IsAuthenticated)
+        {
+            <button class="btn btn-default">
+                @Html.ActionLink("新規作成", "Create", "Game")
+            </button>
+        }
+        else
+        {
+            <p>
+                ゲームを新規作成するにはログインしてください。
+            </p>
+        }
+
+    </div>
+</div>
+<h2>ゲーム一覧</h2>
+@Html.Action("PartialIndex", "Game")
+
+<p>
+    過去に参加したゲームはページ右上の『戦績』から確認出来ます。
+</p>
+
+@*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
+{
+    <h5>全自動</h5>
+    using (Html.BeginForm("Auto", "Game"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.DropDownList("PlayerNum")
+        <input type="submit" value="AutoCreation" />
+    }
+}*@
+
+<hr />
 <div class="hero-unit">
-    <h1>ワンナイト人狼チャット</h1>
+    <h1>このサイト（ワンナイト人狼チャット）について</h1>
     <p class="lead">
         <a href="http://1nite-jinro.com/">ワンナイト人狼</a> をブラウザ上で、チャット形式で遊べる Web アプリです。 <br />
         ワンナイト人狼のルールを元に Web 上にてほぼ再現しています。<br />
-        by <a href="http://www.twitter.com/euro_s">@@euro_s</a>
     </p>
 
 </div>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <h3>ワンナイト人狼とは？</h3>
@@ -44,39 +86,3 @@
         </p>
     </div>
 </div>
-<hr />
-<div class="row">
-    <div class="col-md-6">
-        <h2>ゲーム新規作成</h2>
-        @if (Request.IsAuthenticated)
-        {
-            <button class="btn btn-default">
-                @Html.ActionLink("新規作成", "Create", "Game")
-            </button>
-        }
-        else
-        {
-            <p>
-                ゲームを新規作成するにはログインしてください。
-            </p>
-        }
-
-    </div>
-</div>
-<h2>ゲーム一覧</h2>
-@Html.Action("PartialIndex", "Game")
-
-<p>
-    2014/06/28 現在、過去の村の一覧を見ることはできません。しばらくお待ちください。
-</p>
-
-@*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
-{
-    <h5>全自動</h5>
-    using (Html.BeginForm("Auto", "Game"))
-    {
-        @Html.AntiForgeryToken()
-        @Html.DropDownList("PlayerNum")
-        <input type="submit" value="AutoCreation" />
-    }
-}*@
