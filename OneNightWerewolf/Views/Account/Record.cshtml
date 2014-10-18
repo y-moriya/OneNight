@@ -5,30 +5,70 @@
 }
 
 <h2>@Model.UserName の戦績</h2>
-<h3>Summary</h3>
-<ul>
-    <li>合計：@Model.GetGames().Count(g => g.DeletedAt == null) 戦 </li>
-</ul>
-@*
-    合計: @Model.GetGames().Count() 戦
-    <ul>
-        <li>村人側：100戦 90勝 10敗</li>
-        <li>人狼側：100戦 10勝 90敗</li>
-    </ul>
 
-    <hr />
 
-    <h3>役職別</h3>
+<div class="row">
+    <div class="col-md-4">
+        <h3>戦績</h3>
+        <table class="table table-striped">
+            <tr>
+                <td>合計</td>
+                <td>@Model.CountGames() 戦</td>
+                <td>@Model.CountGames(true) 勝</td>
+                <td>@Model.CountGames(false) 敗</td>
+            </tr>
+            <tr>
+                <td>村人側</td>
+                <td>@Model.CountGames(null, false) 戦</td>
+                <td>@Model.CountGames(true, false) 勝</td>
+                <td>@Model.CountGames(false, false) 敗</td>
+            </tr>
+            <tr>
+                <td>人狼側</td>
+                <td>@Model.CountGames(null, true) 戦</td>
+                <td>@Model.CountGames(true, true) 勝</td>
+                <td>@Model.CountGames(false, true) 敗</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h3>役職別</h3>
+        <table class="table table-striped">
+            <tr>
+                <td>村人</td>
+                <td>@Model.CountGames(null, null, null, true) 戦</td>
+                <td>@Model.CountGames(true, null, null, true) 勝</td>
+                <td>@Model.CountGames(false, null, null, true) 敗</td>
+            </tr>
+            <tr>
+                <td>占い師</td>
+                <td>@Model.CountGames(null, null, null, null, true) 戦</td>
+                <td>@Model.CountGames(true, null, null, null, true) 勝</td>
+                <td>@Model.CountGames(false, null, null, null, true) 敗</td>
+            </tr>
+            <tr>
+                <td>怪盗</td>
+                <td>@Model.CountGames(null, null, null, null, null, true) 戦</td>
+                <td>@Model.CountGames(true, null, null, null, null, true) 勝</td>
+                <td>@Model.CountGames(false, null, null, null, null, true) 敗</td>
+            </tr>
+            <tr>
+                <td>人狼</td>
+                <td>@Model.CountGames(null, null, true) 戦</td>
+                <td>@Model.CountGames(true, null, true) 勝</td>
+                <td>@Model.CountGames(false, null, true) 敗</td>
+            </tr>
+            <tr>
+                <td>狂人</td>
+                <td>@Model.CountGames(null, null, null, null, null, null, true) 戦</td>
+                <td>@Model.CountGames(true, null, null, null, null, null, true) 勝</td>
+                <td>@Model.CountGames(false, null, null, null, null, null, true) 敗</td>
+            </tr>
+        </table>
+    </div>
+</div>※怪盗によって交換された結果を集計しています。
 
-    <ul>
-        <li>村人　：100戦 90勝 10敗</li>
-        <li>占い師：100戦 10勝 90敗</li>
-        <li>怪盗　：100戦 10勝 90敗</li>
-        <li>人狼　：100戦 10勝 90敗</li>
-        <li>狂人　：100戦 10勝 90敗</li>
-    </ul>
-
-    <hr />*@
+<hr />
 
 <h3>参加したゲーム一覧</h3>
 
@@ -43,6 +83,9 @@
         <th>
             人数
         </th>
+        @*<th>
+                役職
+            </th>*@
         <th>
             勝敗
         </th>
@@ -63,6 +106,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PlayerNum) 人
             </td>
+            @*<td>
+                    TODO: 役職名取得メソッド作成
+                    @Model.GetPlayer(item.GameId)
+                </td>*@
             <td>
                 @if (item.DeletedAt != null)
                 {
