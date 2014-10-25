@@ -301,18 +301,6 @@ namespace MvcApplication1.Controllers
             return View();
         }
 
-        public ActionResult Record(string id)
-        {
-            string name = User.Identity.Name;
-            if (!string.IsNullOrEmpty(id))
-            {
-                name = id;
-            }
-            var players = db.Players.Where(p => p.PlayerUserName == name);
-            Record record = new Record(name, players, players.SelectMany(p => db.Games.Where(g => g.GameId == p.GameId)));
-            return View(record);
-        }
-
         [AllowAnonymous]
         [ChildActionOnly]
         public ActionResult ExternalLoginsList(string returnUrl)

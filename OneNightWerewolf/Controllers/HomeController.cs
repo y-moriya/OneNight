@@ -55,5 +55,6 @@ namespace OneNightWerewolf.Controllers
 
             return View();
         }
+
     }
 }

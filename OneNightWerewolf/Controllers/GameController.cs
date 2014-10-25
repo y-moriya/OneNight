@@ -315,6 +315,18 @@ namespace OneNightWerewolf.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult Record(string id)
+        {
+            string name = User.Identity.Name;
+            if (!string.IsNullOrEmpty(id))
+            {
+                name = id;
+            }
+            var players = db.Players.Where(p => p.PlayerUserName == name);
+            Record record = new Record(name, players, players.SelectMany(p => db.Games.Where(g => g.GameId == p.GameId)));
+            return View(record);
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

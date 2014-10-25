@@ -436,7 +436,7 @@
     <Content Include="Views\Home\Version.cshtml" />
     <Content Include="Views\Home\Rules.cshtml" />
     <Content Include="Views\Game\AdminForm.cshtml" />
-    <Content Include="Views\Account\Record.cshtml" />
+    <Content Include="Views\Game\Record.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

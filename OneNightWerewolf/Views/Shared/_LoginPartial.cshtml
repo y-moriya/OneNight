@@ -2,7 +2,7 @@
 {
     <ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "管理" })</li>
-        <li>@Html.ActionLink("戦績", "Record", "Account")</li>
+        <li>@Html.ActionLink("戦績", "Record", "Game", routeValues: new { id = User.Identity.Name }, htmlAttributes: null)</li>
         <li>
             <a href="javascript:document.getElementById('logoutForm').submit()">ログオフ</a>
             @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @role = "form" }))
