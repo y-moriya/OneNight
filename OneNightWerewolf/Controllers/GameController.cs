@@ -322,8 +322,8 @@ namespace OneNightWerewolf.Controllers
             {
                 name = id;
             }
-            var players = db.Players.Where(p => p.PlayerUserName == name);
-            Record record = new Record(name, players, players.SelectMany(p => db.Games.Where(g => g.GameId == p.GameId)));
+            var players = db.Players.Where(p => p.PlayerUserName == name && p.VotePlayerId > 0); // 暫定対応。 TODO: 終了したかどうかの判定をちゃんとする。
+            Record record = new Record(name, players, players.SelectMany(p => db.Games.Where(g => g.GameId == p.GameId && g.Phase >= Phase.Epilogue)));
             return View(record);
         }
 
