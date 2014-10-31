@@ -1,0 +1,35 @@
+﻿@model IEnumerable<OneNightWerewolf.Models.UserProfile>
+
+@{
+    ViewBag.Title = "ユーザ一覧";
+}
+
+<h2>ユーザ一覧</h2>
+
+<table class="table-striped">
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+
+@{ var i = 0; }
+@foreach (var item in Model) {
+        if (i % 5 == 0)
+        {
+            @:<tr>
+        }
+    <td>
+        @Html.ActionLink(item.UserName, "Record", "Game", new { id=item.UserName }, null)
+    </td>
+        if (i % 5 == 4)
+        {
+            @:</tr>
+        }
+
+        i++;
+}
+
+</table>

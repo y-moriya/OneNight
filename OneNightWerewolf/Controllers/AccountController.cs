@@ -330,6 +330,13 @@ namespace MvcApplication1.Controllers
             return PartialView("_RemoveExternalLoginsPartial", externalLogins);
         }
 
+        [AllowAnonymous]
+        public ActionResult Users()
+        {
+            var u = db.UserProfiles.OrderBy(up => up.UserName).ToList(); ;
+            return View(u);
+        }
+
         #region ヘルパー
         private ActionResult RedirectToLocal(string returnUrl)
         {

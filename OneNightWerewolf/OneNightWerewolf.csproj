@@ -437,6 +437,7 @@
     <Content Include="Views\Home\Rules.cshtml" />
     <Content Include="Views\Game\AdminForm.cshtml" />
     <Content Include="Views\Game\Record.cshtml" />
+    <Content Include="Views\Account\Users.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
