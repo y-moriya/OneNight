@@ -34,17 +34,6 @@
     過去に参加したゲームはページ右上の『戦績』から確認出来ます。
 </p>
 
-@*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
-{
-    <h5>全自動</h5>
-    using (Html.BeginForm("Auto", "Game"))
-    {
-        @Html.AntiForgeryToken()
-        @Html.DropDownList("PlayerNum")
-        <input type="submit" value="AutoCreation" />
-    }
-}*@
-
 <hr />
 <div class="hero-unit">
     <h1>このサイト（ワンナイト人狼チャット）について</h1>
