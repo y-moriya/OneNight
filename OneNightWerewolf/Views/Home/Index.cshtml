@@ -9,6 +9,7 @@
 
 <hr />
 
+<<<<<<< HEAD
 <div class="hero-unit">
     <h1>閉鎖のお知らせ</h1>
     <p class="lead">
@@ -29,6 +30,8 @@
     <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
 </div>
 
+=======
+>>>>>>> 73f2e5c95cac5a8338e2dd7a8bdfb70bafc19039
 <div class="row">
     <div class="col-md-6">
         <h2>ゲーム新規作成</h2>
@@ -53,17 +56,6 @@
 <p>
     過去に参加したゲームはページ右上の『戦績』から確認出来ます。
 </p>
-
-@*@if (Request.IsAuthenticated && User.Identity.Name == "euro")
-{
-    <h5>全自動</h5>
-    using (Html.BeginForm("Auto", "Game"))
-    {
-        @Html.AntiForgeryToken()
-        @Html.DropDownList("PlayerNum")
-        <input type="submit" value="AutoCreation" />
-    }
-}*@
 
 <hr />
 <div class="hero-unit">
